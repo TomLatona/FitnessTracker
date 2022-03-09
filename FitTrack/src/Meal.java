@@ -1,5 +1,6 @@
 //Object for meals: contains name and number of calories
 
+
 public class Meal {
 
 	public String name;
