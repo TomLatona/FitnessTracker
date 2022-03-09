@@ -15,4 +15,10 @@ public class User {
 	public int getCG() {
 		return this.calorieGoal;
 	}
+	
+	//returns a string with the full insert statement for the SQL database
+	public String addUserToDB() {
+		String addUser = "insert into *db* (column1, column2, column3) VALUES (" + this.username +", " + this.password +", "+this.calorieGoal+");";
+		return addUser;
+	}
 }

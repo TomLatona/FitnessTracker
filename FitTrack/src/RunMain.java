@@ -33,8 +33,8 @@ public class RunMain {
 		//new field: enter daily calorie goal
 		//int calGoal = 
 		
-		//User username = new User(username, password, calGoal)
-		//add to db
+		//User username = new User(username, password, calGoal);
+		//String addUser = username.addUserToDB();
 	}
 	
 	private static void login() {

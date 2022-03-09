@@ -18,4 +18,10 @@ public class Meal {
 	public int getMealCalories() {
 		return this.calories;
 	}
+	
+	//returns a string with the full insert statement for the SQL database
+	public String addMealtoDB() {
+		String addMeal = "insert into *db* (column1, column2) VALUES (" + this.name +", " + this.calories +");";
+		return addMeal;
+	}
 }
