@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ListView layoutX="29.0" layoutY="82.0" prefHeight="287.0" prefWidth="543.0" />
+      <Label layoutX="28.0" layoutY="24.0" text="Create Account" />
+      <Label layoutX="478.0" layoutY="17.0" prefHeight="32.0" prefWidth="112.0" text="FITNESS TRACKER" />
+      <Label layoutX="56.0" layoutY="105.0" text="First Name, Last name" />
+      <Label layoutX="56.0" layoutY="157.0" text="Username" />
+      <Label layoutX="56.0" layoutY="208.0" prefHeight="17.0" prefWidth="61.0" text="Password" />
+      <Label layoutX="56.0" layoutY="252.0" prefHeight="17.0" prefWidth="112.0" text="Confirm Password" />
+      <PasswordField layoutX="236.0" layoutY="212.0" prefHeight="26.0" prefWidth="200.0" />
+      <PasswordField layoutX="236.0" layoutY="261.0" prefHeight="26.0" prefWidth="200.0" />
+      <Label layoutX="236.0" layoutY="157.0" prefHeight="26.0" prefWidth="180.0" />
+      <Button layoutX="479.0" layoutY="323.0" mnemonicParsing="false" text="Enter" />
+      <TextArea layoutX="236.0" layoutY="105.0" prefHeight="26.0" prefWidth="200.0" />
+      <TextArea layoutX="236.0" layoutY="152.0" prefHeight="41.0" prefWidth="200.0" />
+   </children>
+</Pane>
