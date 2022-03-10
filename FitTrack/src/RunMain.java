@@ -3,9 +3,20 @@
  * If they choose create account, it will initialize a new user object and update the db
  * If they log in, it will authenticate the credentials and send them to the app
  */
-import java.util.*;
 
-public class RunMain {
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class RunMain extends Application{
+	
+	Button caButton;
+	Button loginButton;
 
 	public static void main(String[] args) {
 		//display create account button
@@ -16,6 +27,27 @@ public class RunMain {
 		
 		//if click login button
 			//login();
+		
+		launch(args);
+		
+	}
+	
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		//stage is entire window
+		//scene is contents inside the window
+		primaryStage.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
+		
+		caButton = new Button("Create Account");	
+		loginButton = new Button("Log In");
+
+		HBox layout = new HBox(); //displays boxes side by side
+		layout.getChildren().add(caButton);
+		layout.getChildren().add(loginButton);
+		
+		Scene scene = new Scene(layout, 800, 500);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 	
 	private static void createAccount() {
