@@ -13,7 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class RunMain extends Application{
+public class RunMain extends Application implements EventHandler<ActionEvent> {
 	
 	Button caButton;
 	Button loginButton;
@@ -38,8 +38,14 @@ public class RunMain extends Application{
 		//scene is contents inside the window
 		primaryStage.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
 		
-		caButton = new Button("Create Account");	
+		//create buttons with text
+		caButton = new Button("Create Account");
 		loginButton = new Button("Log In");
+		
+		//when clicked it looks for the action in this class
+		//could change 'this' for another class if event handling was more in depth
+		caButton.setOnAction(this); 
+		loginButton.setOnAction(this);
 
 		HBox layout = new HBox(); //displays boxes side by side
 		layout.getChildren().add(caButton);
@@ -50,7 +56,21 @@ public class RunMain extends Application{
 		primaryStage.show();
 	}
 	
+	@Override
+	public void handle(ActionEvent event) {
+		//depending which button is clicked, run respective method
+		if(event.getSource() == caButton) {
+			createAccount();
+		}
+		
+		if(event.getSource() == loginButton) {
+			login();
+		}
+	}
+	
+	
 	private static void createAccount() {
+		System.out.println("account created *test*");
 		//field for username
 		//field for password
 		//field to re-enter password
@@ -70,6 +90,7 @@ public class RunMain extends Application{
 	}
 	
 	private static void login() {
+		System.out.println("logged in *test*");
 		//field for username
 		//field for password
 		//onClick submit button
