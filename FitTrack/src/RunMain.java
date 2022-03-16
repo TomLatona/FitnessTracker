@@ -6,6 +6,7 @@
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -22,6 +23,9 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 	Button loginButton;
 
 	public static void main(String[] args)throws Exception {
+		getConnection();
+		createTable();
+		insertMealInfo("22222",300,"Famous Amos Cookies");
 		//display create account button
 		//display login button
 		
@@ -33,7 +37,7 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 		
 		launch(args);
 		//creating connection to mysql database
-		getConnection();
+		
 	}
 	
 	@Override
@@ -104,18 +108,27 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 				//compare passwords
 				//if match, load main menu class
 	}
-	//trying to do mysql inserts
-	
+	//creating sql tables
+	public static void createTable() throws Exception{
+		try {
+			Connection con = getConnection();
+			//This is the sql statment that will be run to create the table, can be changed to create any table
+			PreparedStatement create = con.prepareStatement("CREATE TABLE IF NOT EXISTS tablename(id int NOT NULL AUTO_INCREMENT, firstname varchar(255), lastname varchar(255), primary Key(id))");
+			create.executeUpdate();
+		}catch(Exception e) {System.out.println(e);}
+		finally{System.out.println("Table Function Complete");};
+	}
+	//establishes connection with database on localhost
 	public static Connection getConnection() throws Exception{
 		try {
 			String driver = "com.mysql.jdbc.Driver";
 			String url = "jdbc:mysql://localHost:3306/fitnesstrackerdb";
-			String username = "hey";
-			String password = "password123";
+			String username = "root";
+			String password = "Absurdairplane123";
 			Class.forName(driver);
 			
 			Connection conn = DriverManager.getConnection(url,username,password);
-			System.out.println("Connected");
+			System.out.println("Connected to Database");
 			return conn;
 			
 		}catch(Exception e) {System.out.println(e);}
@@ -123,12 +136,20 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 		
 		return null;
 	}
-	public static void post() throws Exception{
-		final String var1 = "John";
-		final String var2 = "Miller";
+	//This function inserts the user's meal info into the database
+	public static void insertMealInfo(String userId, int calorieNum,String foodItem ) throws Exception{
+		String item = foodItem;
+		int calories = calorieNum;
+		String id = userId;
 		try {
 			Connection con = getConnection();
-			Pr
+			PreparedStatement insert = con.prepareStatement("Insert into usermeals(userID,calories,fooditem) values ('"+id+"','"+calories+"','"+item+"')");
+			
+			insert.executeUpdate();
+		}catch(Exception e) {System.out.println(e);}
+			finally {
+				System.out.println("Insert Funtion Completed");
+			}
 		}
 	}
-}
+
