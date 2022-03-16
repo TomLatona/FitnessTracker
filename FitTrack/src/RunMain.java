@@ -4,6 +4,9 @@
  * If they log in, it will authenticate the credentials and send them to the app
  */
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,7 +21,7 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 	Button caButton;
 	Button loginButton;
 
-	public static void main(String[] args) {
+	public static void main(String[] args)throws Exception {
 		//display create account button
 		//display login button
 		
@@ -29,7 +32,8 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 			//login();
 		
 		launch(args);
-		
+		//creating connection to mysql database
+		getConnection();
 	}
 	
 	@Override
@@ -99,5 +103,32 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 			//if match
 				//compare passwords
 				//if match, load main menu class
+	}
+	//trying to do mysql inserts
+	
+	public static Connection getConnection() throws Exception{
+		try {
+			String driver = "com.mysql.jdbc.Driver";
+			String url = "jdbc:mysql://localHost:3306/fitnesstrackerdb";
+			String username = "hey";
+			String password = "password123";
+			Class.forName(driver);
+			
+			Connection conn = DriverManager.getConnection(url,username,password);
+			System.out.println("Connected");
+			return conn;
+			
+		}catch(Exception e) {System.out.println(e);}
+		
+		
+		return null;
+	}
+	public static void post() throws Exception{
+		final String var1 = "John";
+		final String var2 = "Miller";
+		try {
+			Connection con = getConnection();
+			Pr
+		}
 	}
 }
