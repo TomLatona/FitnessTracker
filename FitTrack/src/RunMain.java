@@ -7,6 +7,8 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -26,6 +28,8 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 		getConnection();
 		createTable();
 		insertMealInfo("22222",300,"Famous Amos Cookies");
+		insertUserInfo("22223","2800","wacko mode","jtorres01");
+		getUsersById("22222");
 		//display create account button
 		//display login button
 		
@@ -148,8 +152,53 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 			insert.executeUpdate();
 		}catch(Exception e) {System.out.println(e);}
 			finally {
-				System.out.println("Insert Funtion Completed");
+				System.out.println("Insert userMeal Funtion Completed");
 			}
 		}
+	public static void insertUserInfo(String userId, String calGoal,String passW, String userNam ) throws Exception{
+		String calorieGoal = calGoal;
+		String password = passW;
+		String id = userId;
+		String userName = userNam;
+		try {
+			Connection con = getConnection();
+			PreparedStatement insert = con.prepareStatement("Insert into users(userId,caloriegoal,password,username) values ('"+id+"','"+calorieGoal+"','"+password+"','"+userName+"')");
+			
+			insert.executeUpdate();
+		}catch(Exception e) {System.out.println(e);}
+			finally {
+				System.out.println("Insert userInfo Funtion Completed");
+			}
+		}
+	public static ArrayList<String> getUsersById(String id) throws Exception {
+		try {
+			Connection con = getConnection();
+			PreparedStatement statement = con.prepareStatement("Select * From users where userId = " +id );
+			
+			ResultSet result = statement.executeQuery();
+			
+			ArrayList<String> array = new ArrayList<String>();
+			while(result.next()) {
+				System.out.print(result.getString("userId"));
+				System.out.print(" ");
+				System.out.print(result.getString("caloriegoal"));
+				System.out.print(" ");
+				System.out.print(result.getString("password"));
+				System.out.print(" ");
+				System.out.println(result.getString("username"));
+			
+				array.add(result.getString("userId"));
+				array.add(result.getString("caloriegoal"));
+				array.add(result.getString("password"));
+				array.add(result.getString("username"));
+			}
+			System.out.println("All record have been selected");
+			return array;
+			
+		}catch(Exception e) {System.out.println(e);}
+		return null;
 	}
+}
+	
+
 
