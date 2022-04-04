@@ -127,6 +127,7 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 		try {
 			String driver = "com.mysql.jdbc.Driver";
 			String url = "jdbc:mysql://localHost:3306/fitnesstrackerdb";
+			//this username and password is unique to who's computer you are running this on
 			String username = "root";
 			String password = "Absurdairplane123";
 			Class.forName(driver);
