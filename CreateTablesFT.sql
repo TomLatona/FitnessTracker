@@ -30,8 +30,8 @@ caloriesLostPerAverageReps int not null
 create table if not exists userExercises(
 userId varchar(10) not null primary key,
 time int not null,
-excercieId varchar(10) not null,
-foreign key (excersieId) references exercises(excerciesId)
+exerciseId varchar(10) not null,
+foreign key (exerciseId) references exercises(excerciesId)
 ); 
 
 
