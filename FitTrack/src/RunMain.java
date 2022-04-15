@@ -13,23 +13,29 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class RunMain extends Application implements EventHandler<ActionEvent> {
+public class RunMain extends Application {
 	
-	Button caButton;
-	Button loginButton;
+	Stage window;
+	Scene welcome;
+	static Scene ca;
+	Scene login;
 
 	public static void main(String[] args)throws Exception {
-		getConnection();
-		createTable();
-		insertMealInfo("22222",300,"Famous Amos Cookies");
-		insertUserInfo("22223","2800","wacko mode","jtorres01");
-		getUsersById("22222");
+//		getConnection();
+//		createTable();
+//		insertMealInfo("22222",300,"Famous Amos Cookies");
+//		insertUserInfo("22223","2800","wacko mode","jtorres01");
+//		getUsersById("22222");
 		//display create account button
 		//display login button
 		
@@ -46,59 +52,124 @@ public class RunMain extends Application implements EventHandler<ActionEvent> {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		welcome(primaryStage);
+	}
+	
+	public static void welcome(Stage window) {
 		//stage is entire window
 		//scene is contents inside the window
-		primaryStage.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
+		window.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
 		
 		//create buttons with text
-		caButton = new Button("Create Account");
-		loginButton = new Button("Log In");
+		Button caButton = new Button("Create Account");
+		Button loginButton = new Button("Log In");
 		
-		//when clicked it looks for the action in this class
-		//could change 'this' for another class if event handling was more in depth
-		caButton.setOnAction(this); 
-		loginButton.setOnAction(this);
+		caButton.setOnAction(e -> createAccount(window)); 
+		loginButton.setOnAction(e -> login());
 
 		HBox layout = new HBox(); //displays boxes side by side
 		layout.getChildren().add(caButton);
 		layout.getChildren().add(loginButton);
 		
 		Scene scene = new Scene(layout, 800, 500);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
-	
-	@Override
-	public void handle(ActionEvent event) {
-		//depending which button is clicked, run respective method
-		if(event.getSource() == caButton) {
-			createAccount();
-		}
-		
-		if(event.getSource() == loginButton) {
-			login();
-		}
+		window.setScene(scene);
+		window.show();
 	}
 	
 	
-	private static void createAccount() {
-		System.out.println("account created *test*");
-		//field for username
-		//field for password
-		//field to re-enter password
+	private static void createAccount(Stage window) {
 		
-		//submit button
-		//onClick of submit button
-			//String username = 
-			//String password = 
-			//String passwordCheck = 
-		//check both passwords match
+		//~~ UI ELEMENTS ~~
 		
-		//new field: enter daily calorie goal
-		//int calGoal = 
+		//Creating a GridPane container
+		//all ui elements will be added to the grid
+		GridPane grid = new GridPane();
+		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.setVgap(5);
+		grid.setHgap(5);
 		
-		//User username = new User(username, password, calGoal);
-		//String addUser = username.addUserToDB();
+		//Label to say if username is taken, or success message
+		final Label label = new Label();
+		GridPane.setConstraints(label, 0, 4);
+		GridPane.setColumnSpan(label, 2);
+		grid.getChildren().add(label);
+		
+		//~ TEXT FIELDS ~
+		//username
+		final TextField username = new TextField();
+		username.setPromptText("Choose a username");
+		username.setPrefColumnCount(10);
+		username.getText();
+		GridPane.setConstraints(username, 0, 0);
+		grid.getChildren().add(username);
+		
+		//password
+		final TextField password = new TextField();
+		password.setPromptText("Enter a password");
+		GridPane.setConstraints(password, 0, 1);
+		grid.getChildren().add(password);
+		
+		//password check
+		final TextField pwCheck = new TextField();
+		//pwCheck.setPrefColumnCount(15);
+		pwCheck.setPromptText("Re-enter your password");
+		GridPane.setConstraints(pwCheck, 0, 2);
+		grid.getChildren().add(pwCheck);
+		
+		//calorie goal
+		final TextField calorieGoal = new TextField();
+		calorieGoal.setPrefColumnCount(15);
+		calorieGoal.setPromptText("Enter your daily calorie goal");
+		GridPane.setConstraints(calorieGoal, 0, 3);
+		grid.getChildren().add(calorieGoal);
+		
+		//~ BUTTONS ~
+		//submit
+		Button submit = new Button("Submit");
+		GridPane.setConstraints(submit, 0, 6);
+		grid.getChildren().add(submit);
+		//clear
+		Button clear = new Button("Clear");
+		GridPane.setConstraints(clear, 1, 1);
+		grid.getChildren().add(clear);
+		//back
+		Button back = new Button("Go Back");
+		GridPane.setConstraints(back, 1, 0);
+		grid.getChildren().add(back);
+		//~~ END OF UI ELEMENTS ~~
+		
+		//Build the scene and display it on the stage
+		ca = new Scene(grid, 800, 500);
+		window.setScene(ca);
+
+		//~~ BUTTON EVENT HANDLING ~~
+		//Submit button
+		submit.setOnAction(e -> {
+			//check with database query if username is already present
+				//if so, update label with text (username + " is already taken, try again")
+				//if not, push to database and load home page
+			if(password != pwCheck) {
+				label.setText("Those passwords do not match, try again");
+				password.clear();
+		        pwCheck.clear();
+			}
+			else {
+				label.setText("Account created succesfully!"); //doesn't work, can't compare strings 
+			}
+		 });
+		 
+		//Clear button
+		clear.setOnAction(e -> {
+	        username.clear();
+	        password.clear();
+	        pwCheck.clear();
+	        calorieGoal.clear();
+	        label.setText(null);
+		});
+		
+		//Back button
+		back.setOnAction(e -> welcome(window));
+		//~~ END OF BUTTON EVENT HANDLING ~~
 	}
 	
 	private static void login() {
