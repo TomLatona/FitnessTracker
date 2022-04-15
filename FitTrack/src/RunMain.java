@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -65,7 +66,7 @@ public class RunMain extends Application {
 		Button loginButton = new Button("Log In");
 		
 		caButton.setOnAction(e -> createAccount(window)); 
-		loginButton.setOnAction(e -> login());
+		loginButton.setOnAction(e -> login(window));
 
 		HBox layout = new HBox(); //displays boxes side by side
 		layout.getChildren().add(caButton);
@@ -78,7 +79,6 @@ public class RunMain extends Application {
 	
 	
 	private static void createAccount(Stage window) {
-		
 		//~~ UI ELEMENTS ~~
 		
 		//Creating a GridPane container
@@ -145,16 +145,30 @@ public class RunMain extends Application {
 		//~~ BUTTON EVENT HANDLING ~~
 		//Submit button
 		submit.setOnAction(e -> {
-			//check with database query if username is already present
-				//if so, update label with text (username + " is already taken, try again")
-				//if not, push to database and load home page
-			if(password != pwCheck) {
+			//Check if username exists in db
+			try {
+				if(checkForUser(username.toString()) == true) {
+					label.setText("That username is taken. Try a different one.");
+					username.clear();
+					password.clear();
+				    pwCheck.clear();
+				}
+				else {
+					//make new database entity
+					//load home page
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+			//Checks if passwords match and isn't empty
+			if(!password.getText().equals(pwCheck.getText()) || password.getText().isEmpty() || pwCheck.getText().isEmpty()) {
 				label.setText("Those passwords do not match, try again");
 				password.clear();
 		        pwCheck.clear();
 			}
 			else {
-				label.setText("Account created succesfully!"); //doesn't work, can't compare strings 
+				label.setText("Account created succesfully!"); 
 			}
 		 });
 		 
@@ -172,17 +186,86 @@ public class RunMain extends Application {
 		//~~ END OF BUTTON EVENT HANDLING ~~
 	}
 	
-	private static void login() {
-		System.out.println("logged in *test*");
-		//field for username
-		//field for password
-		//onClick submit button
-			//save username
-			//query db with username
-			//if match
-				//compare passwords
-				//if match, load main menu class
+	private static void login(Stage window) {
+		//~~ UI ELEMENTS ~~
+		
+		//Creating a GridPane container
+		//all ui elements will be added to the grid
+		GridPane grid = new GridPane();
+		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.setVgap(5);
+		grid.setHgap(5);
+		
+		//Label to say if username is incorrect
+		final Label label = new Label();
+		GridPane.setConstraints(label, 0, 4);
+		GridPane.setColumnSpan(label, 2);
+		grid.getChildren().add(label);
+		
+		//~ TEXT FIELDS ~
+		//username
+		final TextField username = new TextField();
+		username.setPromptText("Enter your username");
+		username.setPrefColumnCount(10);
+		username.getText();
+		GridPane.setConstraints(username, 0, 0);
+		grid.getChildren().add(username);
+		
+		//password
+		final TextField password = new TextField();
+		password.setPromptText("Enter your password");
+		GridPane.setConstraints(password, 0, 1);
+		grid.getChildren().add(password);
+		
+		//~ BUTTONS ~
+		//submit
+		Button submit = new Button("Submit");
+		GridPane.setConstraints(submit, 0, 6);
+		grid.getChildren().add(submit);
+		//clear
+		Button clear = new Button("Clear");
+		GridPane.setConstraints(clear, 1, 1);
+		grid.getChildren().add(clear);
+		//back
+		Button back = new Button("Go Back");
+		GridPane.setConstraints(back, 1, 0);
+		grid.getChildren().add(back);
+		//~~ END OF UI ELEMENTS ~~
+		
+		//Build the scene and display it on the stage
+		ca = new Scene(grid, 800, 500);
+		window.setScene(ca);
+		
+		//~~ BUTTON EVENT HANDLING ~~
+		//Submit button
+		submit.setOnAction(e -> {
+			//Check if username exists in db
+			try {
+				if(checkForUser(username.toString()) == true) {
+					//check for password match, if match load home page
+				}
+				else {
+					label.setText("Username not found, please re-enter.");
+					username.clear();
+					password.clear();
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		 });
+		 
+		//Clear button
+		clear.setOnAction(e -> {
+	        username.clear();
+	        password.clear();
+	        label.setText(null);
+		});
+		
+		//Back button
+		back.setOnAction(e -> welcome(window));
+		//~~ END OF BUTTON EVENT HANDLING ~~
 	}
+	
 	//creating sql tables
 	public static void createTable() throws Exception{
 		try {
@@ -269,6 +352,32 @@ public class RunMain extends Application {
 			
 		}catch(Exception e) {System.out.println(e);}
 		return null;
+	}
+	
+	public static boolean checkForUser(String username) throws Exception {
+		//query db with select statement to return username
+		//if exist return true, else return false
+		PreparedStatement statement = null;
+		try {
+			Connection con = getConnection();
+			ResultSet result = statement.executeQuery();
+			statement = con.prepareStatement("Select * From users where userId = " + username);
+			if(result == null) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static User getUser(String id) throws Exception {
+		ArrayList<String> users = getUsersById(id);
+		return new User(users.get(0), users.get(1), users.get(2));
 	}
 }
 	

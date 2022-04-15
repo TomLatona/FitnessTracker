@@ -4,15 +4,15 @@ public class User {
 
 	private String username;
 	private String password;
-	private int calorieGoal;
+	private String calorieGoal;
 	
-	public User(String usr, String pwd, int cg) {
+	public User(String usr, String pwd, String cg) {
 		this.username = usr;
 		this.password = pwd;
 		this.calorieGoal = cg;
 	}
 	
-	public int getCG() {
+	public String getCG() {
 		return this.calorieGoal;
 	}
 	
