@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class RunMain extends Application {
@@ -30,6 +31,7 @@ public class RunMain extends Application {
 	Scene welcome;
 	static Scene ca;
 	Scene login;
+	static Scene home;
 
 	public static void main(String[] args)throws Exception {
 //		getConnection();
@@ -239,10 +241,16 @@ public class RunMain extends Application {
 		//~~ BUTTON EVENT HANDLING ~~
 		//Submit button
 		submit.setOnAction(e -> {
+			AppHome(window); //calls home screen right away for testing
+			
 			//Check if username exists in db
+			//If so, verify password and load home page
 			try {
-				if(checkForUser(username.toString()) == true) {
-					//check for password match, if match load home page
+				if(checkForUser(username.getText()) == true) {
+					User x = getUser(username.getText());
+					if(password.getText().equals(x.getPass())) {
+						AppHome(window);
+					}
 				}
 				else {
 					label.setText("Username not found, please re-enter.");
@@ -378,6 +386,19 @@ public class RunMain extends Application {
 	public static User getUser(String id) throws Exception {
 		ArrayList<String> users = getUsersById(id);
 		return new User(users.get(0), users.get(1), users.get(2));
+	}
+	
+	
+	//APP HOME PAGE, MAIN CONTROLLER 
+	//IS CALLED AFTER LOGIN IS AUTHENTICATED
+	public static void AppHome(Stage window) {
+		//basic screen just to test that it works
+		Text t = new Text(10, 50, "FitTrack Home Page");
+		HBox layout = new HBox();
+		layout.getChildren().add(t);
+		
+		home = new Scene(layout, 800, 500);
+		window.setScene(home);
 	}
 }
 	
