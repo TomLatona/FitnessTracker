@@ -147,22 +147,6 @@ public class RunMain extends Application {
 		//~~ BUTTON EVENT HANDLING ~~
 		//Submit button
 		submit.setOnAction(e -> {
-			//Check if username exists in db
-			try {
-				if(checkForUser(username.toString()) == true) {
-					label.setText("That username is taken. Try a different one.");
-					username.clear();
-					password.clear();
-				    pwCheck.clear();
-				}
-				else {
-					//make new database entity
-					//load home page
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			
 			//Checks if passwords match and isn't empty
 			if(!password.getText().equals(pwCheck.getText()) || password.getText().isEmpty() || pwCheck.getText().isEmpty()) {
 				label.setText("Those passwords do not match, try again");
@@ -170,6 +154,21 @@ public class RunMain extends Application {
 		        pwCheck.clear();
 			}
 			else {
+				//Check if username exists in db
+				try {
+					if(checkForUser(username.toString()) == true) {
+						label.setText("That username is taken. Try a different one.");
+						username.clear();
+						password.clear();
+					    pwCheck.clear();
+					}
+					else {
+						//make new database entity
+						//load home page
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 				label.setText("Account created succesfully!"); 
 			}
 		 });
