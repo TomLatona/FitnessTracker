@@ -38,7 +38,7 @@ public class RunMain extends Application {
 //		createTable();
 //		insertMealInfo("22222",300,"Famous Amos Cookies");
 //		insertUserInfo("22223","2800","wacko mode","jtorres01");
-//		getUsersById("22222");
+		getUsersByName("test1");
 		//display create account button
 		//display login button
 		
@@ -156,7 +156,7 @@ public class RunMain extends Application {
 			else {
 				//Check if username exists in db
 				try {
-					if(checkForUser(username.toString()) == true) {
+					if(checkForUser(username.getText()) == true) {
 						label.setText("That username is taken. Try a different one.");
 						username.clear();
 						password.clear();
@@ -240,14 +240,19 @@ public class RunMain extends Application {
 		//~~ BUTTON EVENT HANDLING ~~
 		//Submit button
 		submit.setOnAction(e -> {
-			AppHome(window); //calls home screen right away for testing
+			//AppHome(window); //calls home screen right away for testing
 			
 			//Check if username exists in db
 			//If so, verify password and load home page
 			try {
+				//System.out.println("Does this print the username? " +username.getText());
 				if(checkForUser(username.getText()) == true) {
-					User x = getUser(username.getText());
-					if(password.getText().equals(x.getPass())) {
+					ArrayList<String> x = getUsersByName(username.getText());
+					for(String y : x) {
+						System.out.println(y);
+					}
+					//User x = new User (username.getText() , password.getText(),"");
+					if(password.getText().equals(x.get(2))) {
 						AppHome(window);
 					}
 				}
@@ -332,22 +337,22 @@ public class RunMain extends Application {
 				System.out.println("Insert userInfo Funtion Completed");
 			}
 		}
-	public static ArrayList<String> getUsersById(String id) throws Exception {
+	public static ArrayList<String> getUsersByName(String name) throws Exception {
 		try {
 			Connection con = getConnection();
-			PreparedStatement statement = con.prepareStatement("Select * From users where userId = " +id );
+			PreparedStatement statement = con.prepareStatement("Select * From users where username = '" +name+"'" );
 			
 			ResultSet result = statement.executeQuery();
 			
 			ArrayList<String> array = new ArrayList<String>();
 			while(result.next()) {
-				System.out.print(result.getString("userId"));
-				System.out.print(" ");
-				System.out.print(result.getString("caloriegoal"));
+				System.out.print(result.getString("username"));
 				System.out.print(" ");
 				System.out.print(result.getString("password"));
 				System.out.print(" ");
-				System.out.println(result.getString("username"));
+				System.out.print(result.getString("caloriegoal"));
+				System.out.print(" ");
+				System.out.println(result.getString("userId"));
 			
 				array.add(result.getString("userId"));
 				array.add(result.getString("caloriegoal"));
@@ -367,9 +372,13 @@ public class RunMain extends Application {
 		PreparedStatement statement = null;
 		try {
 			Connection con = getConnection();
+			statement = con.prepareStatement("Select * From users where username = '" + username +"'" );
 			ResultSet result = statement.executeQuery();
-			statement = con.prepareStatement("Select * From users where userId = " + username);
-			if(result == null) {
+			
+			result.next();
+			System.out.println(result.getString(1));
+			
+			if(result.getString("username") == null) {
 				return false;
 			}
 			else {
@@ -382,8 +391,8 @@ public class RunMain extends Application {
 		return false;
 	}
 	
-	public static User getUser(String id) throws Exception {
-		ArrayList<String> users = getUsersById(id);
+	public static User getUser(String name) throws Exception {
+		ArrayList<String> users = getUsersByName(name);
 		return new User(users.get(0), users.get(1), users.get(2));
 	}
 	
