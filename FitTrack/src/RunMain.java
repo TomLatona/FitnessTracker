@@ -15,6 +15,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -65,11 +66,13 @@ public class RunMain extends Application {
 		//stage is entire window
 		//scene is contents inside the window
 		
-		Image img = new Image("FitnessTracker.jpg");
+		
 		
 		window.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
 		
 		//create buttons with text
+		
+		
 		Button caButton = new Button("Create Account");
 		Button loginButton = new Button("Log In");
 		
@@ -77,11 +80,11 @@ public class RunMain extends Application {
 		loginButton.setOnAction(e -> login(window));
 
 		HBox layout = new HBox(); //displays boxes side by side
+		Image img = new Image("FitnessTracker.jpg");
 		layout.getChildren().add(caButton);
 		layout.getChildren().add(loginButton);
+		layout.getChildren().add(new ImageView(img));
 		
-		Image img1 = new Image("FitnessTracker.jpg");
-		layout.getChildren().add(new ImageView(img1));
 		
 		Scene scene = new Scene(layout, 800, 500);
 		window.setScene(scene);
