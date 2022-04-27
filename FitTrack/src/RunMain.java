@@ -60,7 +60,7 @@ public class RunMain extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		welcome(primaryStage);
-	}
+	}   
 	
 	public static void welcome(Stage window) {
 		//stage is entire window
