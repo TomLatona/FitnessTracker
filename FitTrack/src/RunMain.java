@@ -68,21 +68,36 @@ public class RunMain extends Application {
 		
 		
 		
-		window.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
+		window.setTitle("Welcome to FitnessTracker"); //message will be displayed on top left of window
+		GridPane grid = new GridPane();
+		Image img = new Image("FitnessTracker.jpg"); //importing graphic that appears upon opening
+
+		final TextField caButton1 = new TextField(); // the text field "Welcome to... will appear"
+		caButton1.setPromptText("Welcome to Fitness Tracker");
+		caButton1.getText();
+		GridPane.setConstraints(caButton1, 40, 40);
+		grid.getChildren().add(caButton1);
 		
 		//create buttons with text
 		
 		
 		Button caButton = new Button("Create Account");
 		Button loginButton = new Button("Log In");
+		Button go = new Button ("Go");
 		
 		caButton.setOnAction(e -> createAccount(window)); 
 		loginButton.setOnAction(e -> login(window));
 
 		HBox layout = new HBox(); //displays boxes side by side
-		Image img = new Image("FitnessTracker.jpg");
+		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.setVgap(5);
+		grid.setHgap(5);
+		
 		layout.getChildren().add(caButton);
+
+		
 		layout.getChildren().add(loginButton);
+		
 		layout.getChildren().add(new ImageView(img));
 		
 		
@@ -221,27 +236,27 @@ public class RunMain extends Application {
 		username.setPromptText("Enter your username");
 		username.setPrefColumnCount(10);
 		username.getText();
-		GridPane.setConstraints(username, 0, 0);
+		GridPane.setConstraints(username, 40, 40);
 		grid.getChildren().add(username);
 		
 		//password
 		final TextField password = new TextField();
 		password.setPromptText("Enter your password");
-		GridPane.setConstraints(password, 0, 1);
+		GridPane.setConstraints(password, 40, 41);
 		grid.getChildren().add(password);
 		
 		//~ BUTTONS ~
 		//submit
 		Button submit = new Button("Submit");
-		GridPane.setConstraints(submit, 0, 6);
+		GridPane.setConstraints(submit, 40, 45);
 		grid.getChildren().add(submit);
 		//clear
 		Button clear = new Button("Clear");
-		GridPane.setConstraints(clear, 1, 1);
+		GridPane.setConstraints(clear, 41, 41);
 		grid.getChildren().add(clear);
 		//back
 		Button back = new Button("Go Back");
-		GridPane.setConstraints(back, 1, 0);
+		GridPane.setConstraints(back, 41, 40);
 		grid.getChildren().add(back);
 		//~~ END OF UI ELEMENTS ~~
 		
@@ -288,6 +303,10 @@ public class RunMain extends Application {
 		//Back button
 		back.setOnAction(e -> welcome(window));
 		//~~ END OF BUTTON EVENT HANDLING ~~
+	}
+	
+	private static void homePage(Stage window) {
+		
 	}
 	
 	//creating sql tables
