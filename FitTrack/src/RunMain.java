@@ -19,6 +19,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -45,6 +47,7 @@ public class RunMain extends Application {
 		//if click create account button
 			//createAccount();
 		
+		
 		//if click login button
 			//login();
 		
@@ -61,6 +64,9 @@ public class RunMain extends Application {
 	public static void welcome(Stage window) {
 		//stage is entire window
 		//scene is contents inside the window
+		
+		Image img = new Image("FitnessTracker.jpg");
+		
 		window.setTitle("Welcome to FitnessTracker"); //will be displayed on top left of window
 		
 		//create buttons with text
@@ -73,6 +79,9 @@ public class RunMain extends Application {
 		HBox layout = new HBox(); //displays boxes side by side
 		layout.getChildren().add(caButton);
 		layout.getChildren().add(loginButton);
+		
+		Image img1 = new Image("FitnessTracker.jpg");
+		layout.getChildren().add(new ImageView(img1));
 		
 		Scene scene = new Scene(layout, 800, 500);
 		window.setScene(scene);
@@ -92,8 +101,8 @@ public class RunMain extends Application {
 		
 		//Label to say if username is taken, or success message
 		final Label label = new Label();
-		GridPane.setConstraints(label, 0, 4);
-		GridPane.setColumnSpan(label, 2);
+		GridPane.setConstraints(label, 30, 40);
+		GridPane.setColumnSpan(label, 5);
 		grid.getChildren().add(label);
 		
 		//~ TEXT FIELDS ~
@@ -102,41 +111,41 @@ public class RunMain extends Application {
 		username.setPromptText("Choose a username");
 		username.setPrefColumnCount(10);
 		username.getText();
-		GridPane.setConstraints(username, 0, 0);
+		GridPane.setConstraints(username, 40, 40);
 		grid.getChildren().add(username);
 		
 		//password
 		final TextField password = new TextField();
 		password.setPromptText("Enter a password");
-		GridPane.setConstraints(password, 0, 1);
+		GridPane.setConstraints(password, 40, 41);
 		grid.getChildren().add(password);
 		
 		//password check
 		final TextField pwCheck = new TextField();
 		//pwCheck.setPrefColumnCount(15);
 		pwCheck.setPromptText("Re-enter your password");
-		GridPane.setConstraints(pwCheck, 0, 2);
+		GridPane.setConstraints(pwCheck, 40, 42);
 		grid.getChildren().add(pwCheck);
 		
 		//calorie goal
 		final TextField calorieGoal = new TextField();
 		calorieGoal.setPrefColumnCount(15);
 		calorieGoal.setPromptText("Enter your daily calorie goal");
-		GridPane.setConstraints(calorieGoal, 0, 3);
+		GridPane.setConstraints(calorieGoal, 40, 43);
 		grid.getChildren().add(calorieGoal);
 		
 		//~ BUTTONS ~
 		//submit
 		Button submit = new Button("Submit");
-		GridPane.setConstraints(submit, 0, 6);
+		GridPane.setConstraints(submit, 40, 45);
 		grid.getChildren().add(submit);
 		//clear
 		Button clear = new Button("Clear");
-		GridPane.setConstraints(clear, 1, 1);
+		GridPane.setConstraints(clear, 41, 41);
 		grid.getChildren().add(clear);
 		//back
 		Button back = new Button("Go Back");
-		GridPane.setConstraints(back, 1, 0);
+		GridPane.setConstraints(back, 41, 40);
 		grid.getChildren().add(back);
 		//~~ END OF UI ELEMENTS ~~
 		
