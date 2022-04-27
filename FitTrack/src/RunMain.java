@@ -26,6 +26,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
 
 public class RunMain extends Application {
@@ -37,37 +38,17 @@ public class RunMain extends Application {
 	static Scene home;
 
 	public static void main(String[] args)throws Exception {
-//		getConnection();
-//		createTable();
-//		insertMealInfo("22222",300,"Famous Amos Cookies");
-//		insertUserInfo("22223","2800","wacko mode","jtorres01");
-		getUsersByName("test1");
-		//display create account button
-		//display login button
-		
-		//if click create account button
-			//createAccount();
-		
-		
-		//if click login button
-			//login();
-		
-		launch(args);
-		//creating connection to mysql database
+		launch(args); //runs start method
 		
 	}
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		welcome(primaryStage);
+		//AppHome(primaryStage); //for testing
 	}   
 	
 	public static void welcome(Stage window) {
-		//stage is entire window
-		//scene is contents inside the window
-		
-		
-		
 		window.setTitle("Welcome to FITNESS TRACKER"); //message will be displayed on top left of window
 		GridPane grid = new GridPane();
 		Image img = new Image("FitnessTracker.jpg"); //importing graphic that appears upon opening
@@ -79,8 +60,6 @@ public class RunMain extends Application {
 		grid.getChildren().add(caButton1);
 		
 		//create buttons with text
-		
-		
 		Button caButton = new Button("Create Account");
 		Button loginButton = new Button("Log In");
 		Button go = new Button ("Go");
@@ -94,18 +73,13 @@ public class RunMain extends Application {
 		grid.setHgap(5);
 		
 		layout.getChildren().add(caButton);
-
-		
 		layout.getChildren().add(loginButton);
-		
 		layout.getChildren().add(new ImageView(img));
-		
 		
 		Scene scene = new Scene(layout, 800, 500);
 		window.setScene(scene);
 		window.show();
 	}
-	
 	
 	private static void createAccount(Stage window) {
 		//~~ UI ELEMENTS ~~
@@ -305,19 +279,6 @@ public class RunMain extends Application {
 		//~~ END OF BUTTON EVENT HANDLING ~~
 	}
 	
-	private static void homePage(Stage window) { //Method for the home page GUI
-		//~~ UI ELEMENTS ~~
-		
-		//Creating a GridPane container
-		//all ui elements will be added to the grid
-		GridPane grid = new GridPane();
-		grid.setPadding(new Insets(10, 10, 10, 10));
-		grid.setVgap(5);
-		grid.setHgap(5);
-		
-	}
-	
-	
 	//creating sql tables
 	public static void createTable() throws Exception{
 		try {
@@ -436,19 +397,96 @@ public class RunMain extends Application {
 		return new User(users.get(0), users.get(1), users.get(2));
 	}
 	
-	
 	//APP HOME PAGE, MAIN CONTROLLER 
 	//IS CALLED AFTER LOGIN IS AUTHENTICATED
 	public static void AppHome(Stage window) {
-		//basic screen just to test that it works
-		Text t = new Text(10, 50, "FitTrack Home Page");
-		HBox layout = new HBox();
-		layout.getChildren().add(t);
+		window.setTitle("FitTrack Home");
 		
-		home = new Scene(layout, 800, 500);
+		//Grid for all ui elements
+		GridPane grid = new GridPane();
+		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.setVgap(5);
+		grid.setHgap(5);
+
+		//~~ THIS WEEK'S MEALS SECTION ~~
+			Text weekviewTitle = new Text(10, 50, "This week's meals:");
+			GridPane.setConstraints(weekviewTitle, 3, 3);
+			grid.getChildren().add(weekviewTitle);
+			
+			Text Monday = new Text(10, 50, "Monday: ");
+			GridPane.setConstraints(Monday, 3, 6);
+			grid.getChildren().add(Monday);
+			
+			Text Tuesday = new Text(10, 50, "Tuesday: ");
+			GridPane.setConstraints(Tuesday, 3, 8);
+			grid.getChildren().add(Tuesday);
+			
+			Text Wednesday = new Text(10, 50, "Wednesday: ");
+			GridPane.setConstraints(Wednesday, 3, 10);
+			grid.getChildren().add(Wednesday);
+			
+			Text Thursday = new Text(10, 50, "Thursday: ");
+			GridPane.setConstraints(Thursday, 3, 12);
+			grid.getChildren().add(Thursday);
+			
+			Text Friday = new Text(10, 50, "Friday: ");
+			GridPane.setConstraints(Friday, 3, 14);
+			grid.getChildren().add(Friday);
+			
+			Text Saturday = new Text(10, 50, "Saturday: ");
+			GridPane.setConstraints(Saturday, 3, 16);
+			grid.getChildren().add(Saturday);
+			
+			Text Sunday = new Text(10, 50, "Sunday: ");
+			GridPane.setConstraints(Sunday, 3, 18);
+			grid.getChildren().add(Sunday);
+			//method to query all meals for user
+			//store results in arraylist, add them to grid with weekday first
+		//~~ END OF THIS WEEK'S MEALS SECTION ~~
+		
+		
+		//~~ ADD MEAL SECTION ~~
+			Text newMealTitle = new Text(10, 50, "Add new meal:");
+			GridPane.setConstraints(newMealTitle, 60, 3);
+			grid.getChildren().add(newMealTitle);
+			
+			//DROP DOWN BOXES
+			ChoiceBox<String> weekday = new ChoiceBox<>();
+			weekday.getItems().addAll("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
+			GridPane.setConstraints(weekday, 60, 5);
+			grid.getChildren().add(weekday);
+			
+			ChoiceBox<String> mealType = new ChoiceBox<>();
+			mealType.getItems().addAll("Breakfast", "Lunch", "Dinner", "Snack");
+			GridPane.setConstraints(mealType, 60, 7);
+			grid.getChildren().add(mealType);
+			
+			//TEXT FIELDS
+			final TextField mealName = new TextField();
+			mealName.setPromptText("Meal name");
+			mealName.setPrefColumnCount(10);
+			mealName.getText();
+			GridPane.setConstraints(mealName, 60, 9);
+			grid.getChildren().add(mealName);
+			
+			final TextField calNum = new TextField();
+			calNum.setPromptText("Number of calories");
+			GridPane.setConstraints(calNum, 60, 11);
+			grid.getChildren().add(calNum);
+			
+			Button submit = new Button("Submit");
+			GridPane.setConstraints(submit, 60, 14);
+			grid.getChildren().add(submit);
+		//~~ END OF ADD MEAL SECTION ~~
+			
+		submit.setOnAction(e -> {
+			//add meal to db for whatever day is selected
+		});
+		
+		//Build and display
+		home = new Scene(grid, 800, 500);
 		window.setScene(home);
+		window.show();
 	}
 }
 	
-
-
