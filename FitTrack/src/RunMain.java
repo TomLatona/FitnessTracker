@@ -68,7 +68,7 @@ public class RunMain extends Application {
 		
 		
 		
-		window.setTitle("Welcome to FitnessTracker"); //message will be displayed on top left of window
+		window.setTitle("Welcome to FITNESS TRACKER"); //message will be displayed on top left of window
 		GridPane grid = new GridPane();
 		Image img = new Image("FitnessTracker.jpg"); //importing graphic that appears upon opening
 
@@ -305,9 +305,18 @@ public class RunMain extends Application {
 		//~~ END OF BUTTON EVENT HANDLING ~~
 	}
 	
-	private static void homePage(Stage window) {
+	private static void homePage(Stage window) { //Method for the home page GUI
+		//~~ UI ELEMENTS ~~
+		
+		//Creating a GridPane container
+		//all ui elements will be added to the grid
+		GridPane grid = new GridPane();
+		grid.setPadding(new Insets(10, 10, 10, 10));
+		grid.setVgap(5);
+		grid.setHgap(5);
 		
 	}
+	
 	
 	//creating sql tables
 	public static void createTable() throws Exception{
