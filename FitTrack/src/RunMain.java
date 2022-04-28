@@ -51,13 +51,13 @@ public class RunMain extends Application {
 	public static void welcome(Stage window) {
 		window.setTitle("Welcome to FITNESS TRACKER"); //message will be displayed on top left of window
 		GridPane grid = new GridPane();
-		Image img = new Image("FitnessTracker.jpg"); //importing graphic that appears upon opening
-
+		Image img = new Image("FitnessTrackerLogo.jpg"); //importing graphic that appears upon opening
+		grid.getChildren().add(new ImageView(img));
+		
 		final TextField caButton1 = new TextField(); // the text field "Welcome to... will appear"
 		caButton1.setPromptText("Welcome to Fitness Tracker");
 		caButton1.getText();
-		GridPane.setConstraints(caButton1, 40, 40);
-		grid.getChildren().add(caButton1);
+		GridPane.setConstraints(caButton1, 320, 200);
 		
 		//create buttons with text
 		Button caButton = new Button("Create Account");
@@ -139,6 +139,11 @@ public class RunMain extends Application {
 		Button back = new Button("Go Back");
 		GridPane.setConstraints(back, 41, 40);
 		grid.getChildren().add(back);
+		
+		HBox layout = new HBox(); //displays boxes side by side
+		Image img = new Image("FitnessTrackerLogo.jpg"); // logo in bottom right corner
+		layout.getChildren().add(new ImageView(img));
+		
 		//~~ END OF UI ELEMENTS ~~
 		
 		//Build the scene and display it on the stage
