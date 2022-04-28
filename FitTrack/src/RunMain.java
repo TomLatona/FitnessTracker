@@ -155,6 +155,18 @@ public class RunMain extends Application {
 		        pwCheck.clear();
 			}
 			else {
+				//check if calorie goal is a number and is not null
+				if(calorieGoal.getText().chars().allMatch(Character :: isDigit) || calorieGoal == null) {
+					label.setText("That calorie goal is invalid. Try again");
+					calorieGoal.clear();
+				}
+				
+				//check if calorie goal is within range
+				if(Integer.parseInt(calorieGoal.getText()) > 1200 && Integer.parseInt(calorieGoal.getText()) < 10000){
+					label.setText("That calorie goal is unsafe to be consuming, try something more realistic.");
+					calorieGoal.clear();
+				}
+				
 				//Check if username exists in db
 				try {
 					if(checkForUser(username.getText()) == true) {
@@ -441,7 +453,7 @@ public class RunMain extends Application {
 			grid.getChildren().add(weekviewTitle);
 			
 			int mon = getCaloriesForDay(getMeals(username, "Monday")); //returns total calories for this day
-			//if(mon < calGoal) { //updates text with their calorie deficit status
+			//if(mon < Integer.parseInt(calGoal)) { //updates text with their calorie deficit status
 				//Text Monday = new Text(10, 50, "Monday: " + def);
 			//}
 			//else {
