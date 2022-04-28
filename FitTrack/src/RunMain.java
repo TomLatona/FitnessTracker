@@ -45,7 +45,7 @@ public class RunMain extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		welcome(primaryStage);
-		//AppHome(primaryStage); //for testing
+		//AppHome(primaryStage, "tom"); //for testing
 	}   
 	
 	public static void welcome(Stage window) {
@@ -254,7 +254,7 @@ public class RunMain extends Application {
 					}
 					//User x = new User (username.getText() , password.getText(),"");
 					if(password.getText().equals(x.get(2))) {
-						AppHome(window);
+						AppHome(window, username.getText());
 					}
 				}
 				else {
@@ -397,22 +397,56 @@ public class RunMain extends Application {
 		return new User(users.get(0), users.get(1), users.get(2));
 	}
 	
+	
+	public static ArrayList<Meal> getMeals(String username, String day){
+		//query db to return all elements containing username and that day
+		return null;
+	}
+	
+	public static int getCaloriesForDay(ArrayList<Meal> meals) {
+		int calorieTotal=0; 
+		for(Meal x : meals) {
+			//print on UI instead of console
+			System.out.println(x.getName() + ": " + x.getCalories());
+			calorieTotal += x.getCalories();
+		}
+		return calorieTotal;
+	}
+	
 	//APP HOME PAGE, MAIN CONTROLLER 
 	//IS CALLED AFTER LOGIN IS AUTHENTICATED
-	public static void AppHome(Stage window) {
+	public static void AppHome(Stage window, String username) throws Exception {
 		window.setTitle("FitTrack Home");
+		
+		//get calorie goal for user
+		String calGoal = getUser(username).getCG();
 		
 		//Grid for all ui elements
 		GridPane grid = new GridPane();
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
+		
+		//Displays user's calorie goal
+		Text calGoalTitle = new Text(10, 50, calGoal);
+		GridPane.setConstraints(calGoalTitle, 40, 2);
+		grid.getChildren().add(calGoalTitle);
 
 		//~~ THIS WEEK'S MEALS SECTION ~~
+			String def = "in deficit!";
+			String notDef = "not in deficit.";
+			
 			Text weekviewTitle = new Text(10, 50, "This week's meals:");
 			GridPane.setConstraints(weekviewTitle, 3, 3);
 			grid.getChildren().add(weekviewTitle);
 			
+			int mon = getCaloriesForDay(getMeals(username, "Monday")); //returns total calories for this day
+			//if(mon < calGoal) { //updates text with their calorie deficit status
+				//Text Monday = new Text(10, 50, "Monday: " + def);
+			//}
+			//else {
+				//Text Monday = new Text(10, 50, "Monday: " + notDef);
+			//}
 			Text Monday = new Text(10, 50, "Monday: ");
 			GridPane.setConstraints(Monday, 3, 6);
 			grid.getChildren().add(Monday);

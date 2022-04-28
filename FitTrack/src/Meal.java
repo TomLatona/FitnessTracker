@@ -5,17 +5,18 @@ public class Meal {
 
 	public String name;
 	public int calories;
+	//pubic String type;
 	
 	public Meal(String n, int c) {
 		this.name = n;
 		this.calories = c;
 	}
 	
-	public String getMealName() {
+	public String getName() {
 		return this.name;
 	}
 	
-	public int getMealCalories() {
+	public int getCalories() {
 		return this.calories;
 	}
 	
