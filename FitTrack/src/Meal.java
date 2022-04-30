@@ -4,19 +4,21 @@
 public class Meal {
 
 	public String name;
-	public int calories;
+	public String calories;
+	public String mealID;
 	//pubic String type;
 	
-	public Meal(String n, int c) {
+	public Meal(String n, String c, String id) {
 		this.name = n;
 		this.calories = c;
+		this.mealID = id;
 	}
 	
 	public String getName() {
 		return this.name;
 	}
 	
-	public int getCalories() {
+	public String getCalories() {
 		return this.calories;
 	}
 	

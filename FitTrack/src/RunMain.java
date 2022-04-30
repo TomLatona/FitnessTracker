@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -264,14 +265,16 @@ public class RunMain extends Application {
 			//If so, verify password and load home page
 			try {
 				//System.out.println("Does this print the username? " +username.getText());
-				if(checkForUser(username.getText()) == true) {
-					ArrayList<String> x = getUsersByName(username.getText());
-					for(String y : x) {
-						System.out.println(y);
-					}
-					//User x = new User (username.getText() , password.getText(),"");
+				//if(checkForUser(username.getText()) == true) {
+				ArrayList<String> x = getUsersByName(username.getText());
+				if(x != null) {
+//					for(String y : x) {
+//						System.out.println(y);
+//					}
+				//User x = new User (username.getText() , password.getText(),"");
 					if(password.getText().equals(x.get(2))) {
-						AppHome(window, username.getText());
+						AppHome(window, x.get(0));
+					
 					}
 				}
 				else {
@@ -325,16 +328,24 @@ public class RunMain extends Application {
 		
 		return null;
 	}
+	
 	//This function inserts the user's meal info into the database
-	public static void insertMealInfo(String userId, int calorieNum,String foodItem ) throws Exception{
-		String item = foodItem;
-		int calories = calorieNum;
-		String id = userId;
+	public static void insertMealInfo(String mealName, String servings, String date, String userID) throws Exception{
 		try {
 			Connection con = getConnection();
-			PreparedStatement insert = con.prepareStatement("Insert into usermeals(userID,calories,fooditem) values ('"+id+"','"+calories+"','"+item+"')");
 			
+			//get the meal ID using meal name
+			PreparedStatement getMealID = con.prepareStatement("Select userMealId from meals where foodItem = '" +mealName+"'");
+			ResultSet result = getMealID.executeQuery();
+			String mid = "";
+			if(result.next()) {
+				mid = result.getString("userMealId");	
+			}
+			
+			//Insert meal into db
+			PreparedStatement insert = con.prepareStatement("Insert into usermeals(mealId, servings , date, userID) values ('"+mid+"','"+servings+"','"+date+"', '"+userID+"')");
 			insert.executeUpdate();
+			
 		}catch(Exception e) {System.out.println(e);}
 			finally {
 				System.out.println("Insert userMeal Funtion Completed");
@@ -411,32 +422,52 @@ public class RunMain extends Application {
 	
 	public static User getUser(String name) throws Exception {
 		ArrayList<String> users = getUsersByName(name);
-		return new User(users.get(0), users.get(1), users.get(2));
+		return new User(users.get(0), users.get(1), users.get(2), users.get(3));
 	}
 	
 	
-	public static ArrayList<Meal> getMeals(String username, String day){
-		//query db to return all elements containing username and that day
+	public static ArrayList<Meal> getMeals(){
+		try {
+			Connection con = getConnection();
+			PreparedStatement statement = con.prepareStatement("Select * From meals" );
+			
+			ResultSet result = statement.executeQuery();
+			
+			ArrayList<String> array = new ArrayList<String>();
+			while(result.next()) {
+				array.add(result.getString("foodItem"));
+				array.add(result.getString("caloriesPerServing"));
+				array.add(result.getString("userMealId"));
+			}
+			ArrayList<Meal> meals = new ArrayList<Meal>();
+			for(int i = 0; i< array.size(); i+=3) {
+				Meal x = new Meal(array.get(i), array.get(i+1), array.get(i+2));
+				meals.add(x);
+			}
+			return meals;
+			
+		}catch(Exception e) {System.out.println(e);}
 		return null;
 	}
 	
-	public static int getCaloriesForDay(ArrayList<Meal> meals) {
-		int calorieTotal=0; 
-		for(Meal x : meals) {
-			//print on UI instead of console
-			System.out.println(x.getName() + ": " + x.getCalories());
-			calorieTotal += x.getCalories();
-		}
-		return calorieTotal;
-	}
+	
+//	public static int getCaloriesForDay(ArrayList<Meal> meals) {
+//		int calorieTotal=0; 
+//		for(Meal x : meals) {
+//			//print on UI instead of console
+//			System.out.println(x.getName() + ": " + x.getCalories());
+//			calorieTotal += x.getCalories();
+//		}
+//		return calorieTotal;
+//	}
 	
 	//APP HOME PAGE, MAIN CONTROLLER 
 	//IS CALLED AFTER LOGIN IS AUTHENTICATED
-	public static void AppHome(Stage window, String username) throws Exception {
+	public static void AppHome(Stage window, String userID) throws Exception {
 		window.setTitle("FitTrack Home");
 		
 		//get calorie goal for user
-		String calGoal = getUser(username).getCG();
+		//String calGoal = getUser(username).getCG();
 		
 		//Grid for all ui elements
 		GridPane grid = new GridPane();
@@ -445,9 +476,9 @@ public class RunMain extends Application {
 		grid.setHgap(5);
 		
 		//Displays user's calorie goal
-		Text calGoalTitle = new Text(10, 50, calGoal);
-		GridPane.setConstraints(calGoalTitle, 40, 2);
-		grid.getChildren().add(calGoalTitle);
+		//Text calGoalTitle = new Text(10, 50, calGoal);
+		//GridPane.setConstraints(calGoalTitle, 40, 2);
+		//grid.getChildren().add(calGoalTitle);
 
 		//~~ THIS WEEK'S MEALS SECTION ~~
 			String def = "in deficit!";
@@ -457,7 +488,7 @@ public class RunMain extends Application {
 			GridPane.setConstraints(weekviewTitle, 3, 3);
 			grid.getChildren().add(weekviewTitle);
 			
-			int mon = getCaloriesForDay(getMeals(username, "Monday")); //returns total calories for this day
+			//int mon = getCaloriesForDay(getMeals(username, "Monday")); //returns total calories for this day
 			//if(mon < Integer.parseInt(calGoal)) { //updates text with their calorie deficit status
 				//Text Monday = new Text(10, 50, "Monday: " + def);
 			//}
@@ -501,29 +532,29 @@ public class RunMain extends Application {
 			GridPane.setConstraints(newMealTitle, 60, 3);
 			grid.getChildren().add(newMealTitle);
 			
-			//DROP DOWN BOXES
-			ChoiceBox<String> weekday = new ChoiceBox<>();
-			weekday.getItems().addAll("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
-			GridPane.setConstraints(weekday, 60, 5);
-			grid.getChildren().add(weekday);
+			//For displaying meal choices drop down menu
+			ArrayList<Meal> meals = getMeals();
+			ArrayList<String> mealNames = new ArrayList<String>();
+			for(Meal x : meals) {
+				mealNames.add(x.getName());
+			}
 			
-			ChoiceBox<String> mealType = new ChoiceBox<>();
-			mealType.getItems().addAll("Breakfast", "Lunch", "Dinner", "Snack");
+			//DROP DOWN BOXES
+			ChoiceBox<String> mealType = new ChoiceBox<>(FXCollections.observableArrayList(mealNames));
+			mealType.getItems().addAll();
 			GridPane.setConstraints(mealType, 60, 7);
 			grid.getChildren().add(mealType);
 			
-			//TEXT FIELDS
-			final TextField mealName = new TextField();
-			mealName.setPromptText("Meal name");
-			mealName.setPrefColumnCount(10);
-			mealName.getText();
-			GridPane.setConstraints(mealName, 60, 9);
-			grid.getChildren().add(mealName);
+			ChoiceBox<String> servings = new ChoiceBox<String>();
+			servings.getItems().addAll("1", "2", "3", "4", "5", "6", "7");
+			GridPane.setConstraints(servings, 60, 8);
+			grid.getChildren().add(servings);
 			
-			final TextField calNum = new TextField();
-			calNum.setPromptText("Number of calories");
-			GridPane.setConstraints(calNum, 60, 11);
-			grid.getChildren().add(calNum);
+			ChoiceBox<String> date = new ChoiceBox<String>();
+			date.getItems().addAll("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
+			GridPane.setConstraints(date, 60, 9);
+			grid.getChildren().add(date);
+
 			
 			Button submit = new Button("Submit");
 			GridPane.setConstraints(submit, 60, 14);
@@ -531,7 +562,13 @@ public class RunMain extends Application {
 		//~~ END OF ADD MEAL SECTION ~~
 			
 		submit.setOnAction(e -> {
-			//add meal to db for whatever day is selected
+			try {
+				insertMealInfo(mealType.getValue(), servings.getValue(), date.getValue(), userID);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//meal name, servings, date, userid
 		});
 		
 		//Build and display

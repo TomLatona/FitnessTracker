@@ -5,11 +5,13 @@ public class User {
 	private String username;
 	private String password;
 	private String calorieGoal;
+	private String userID;
 	
-	public User(String usr, String pwd, String cg) {
+	public User(String usr, String pwd, String cg, String id) {
 		this.username = usr;
 		this.password = pwd;
 		this.calorieGoal = cg;
+		this.userID = id;
 	}
 	
 	public String getCG() {
