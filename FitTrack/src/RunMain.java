@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -162,19 +163,19 @@ public class RunMain extends Application {
 			}
 			else {
 				//check if calorie goal is a number and is not null
-				if(calorieGoal.getText().chars().allMatch(Character :: isDigit) || calorieGoal == null) {
-					label.setText("That calorie goal is invalid. Try again");
-					calorieGoal.clear();
-				}
+//				if(calorieGoal.getText().chars().allMatch(Character :: isDigit) || calorieGoal == null) {
+//					label.setText("That calorie goal is invalid. Try again");
+//					calorieGoal.clear();
+//				}
 				
 				//check if calorie goal is within range
-				if(Integer.parseInt(calorieGoal.getText()) > 1200 && Integer.parseInt(calorieGoal.getText()) < 10000){
-					label.setText("That calorie goal is unsafe to be consuming, try something more realistic.");
-					calorieGoal.clear();
-				}
+//				if(Integer.parseInt(calorieGoal.getText()) > 1200 && Integer.parseInt(calorieGoal.getText()) < 10000){
+//					label.setText("That calorie goal is unsafe to be consuming, try something more realistic.");
+//					calorieGoal.clear();
+//				}
 				
-				//Check if username exists in db
 				try {
+					//check for duplicate usernames
 					if(checkForUser(username.getText()) == true) {
 						label.setText("That username is taken. Try a different one.");
 						username.clear();
@@ -182,12 +183,14 @@ public class RunMain extends Application {
 					    pwCheck.clear();
 					}
 					else {
-						//make new database entity
-						//load home page
+						Random rand = new Random();
+						String num = String.format("%04d",  rand.nextInt(9999));
+						insertUserInfo(username.getText(), password.getText(), calorieGoal.getText(), num);
+						AppHome(window, num, calorieGoal.getText());
 					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}			
 				label.setText("Account created succesfully!"); 
 			}
 		 });
@@ -273,7 +276,7 @@ public class RunMain extends Application {
 //					}
 				//User x = new User (username.getText() , password.getText(),"");
 					if(password.getText().equals(x.get(2))) {
-						AppHome(window, x.get(0));
+						AppHome(window, x.get(0), x.get(1));
 					
 					}
 				}
@@ -351,15 +354,15 @@ public class RunMain extends Application {
 				System.out.println("Insert userMeal Funtion Completed");
 			}
 		}
-	public static void insertUserInfo(String userId, String calGoal,String passW, String userNam ) throws Exception{
-		String calorieGoal = calGoal;
-		String password = passW;
-		String id = userId;
-		String userName = userNam;
+	public static void insertUserInfo(String userName, String passW, String calGoal, String userId) throws Exception{
+		//generate userID
+		
 		try {
 			Connection con = getConnection();
-			PreparedStatement insert = con.prepareStatement("Insert into users(userId,caloriegoal,password,username) values ('"+id+"','"+calorieGoal+"','"+password+"','"+userName+"')");
 			
+			
+			//PreparedStatement id = con.prepareStatement("select userID from users where userID = '"+num+"'");
+			PreparedStatement insert = con.prepareStatement("Insert into users(userId,caloriegoal,password,username) values ('"+userId+"','"+calGoal+"','"+passW+"','"+userName+"')");
 			insert.executeUpdate();
 		}catch(Exception e) {System.out.println(e);}
 			finally {
@@ -396,26 +399,14 @@ public class RunMain extends Application {
 	}
 	
 	public static boolean checkForUser(String username) throws Exception {
-		//query db with select statement to return username
-		//if exist return true, else return false
-		PreparedStatement statement = null;
-		try {
-			Connection con = getConnection();
-			statement = con.prepareStatement("Select * From users where username = '" + username +"'" );
-			ResultSet result = statement.executeQuery();
-			
-			result.next();
-			System.out.println(result.getString(1));
-			
-			if(result.getString("username") == null) {
-				return false;
-			}
-			else {
+		Connection con = getConnection();
+		PreparedStatement statement = con.prepareStatement("Select username From users where username = '" + username +"'" );
+		ResultSet result = statement.executeQuery();
+		if(result.next()) {
+			System.out.println(result.getString("username"));
+			if(username.equals(result.getString("username"))) {
 				return true;
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return false;
 	}
@@ -463,11 +454,8 @@ public class RunMain extends Application {
 	
 	//APP HOME PAGE, MAIN CONTROLLER 
 	//IS CALLED AFTER LOGIN IS AUTHENTICATED
-	public static void AppHome(Stage window, String userID) throws Exception {
+	public static void AppHome(Stage window, String userID, String calGoal) throws Exception {
 		window.setTitle("FitTrack Home");
-		
-		//get calorie goal for user
-		//String calGoal = getUser(username).getCG();
 		
 		//Grid for all ui elements
 		GridPane grid = new GridPane();
@@ -476,9 +464,9 @@ public class RunMain extends Application {
 		grid.setHgap(5);
 		
 		//Displays user's calorie goal
-		//Text calGoalTitle = new Text(10, 50, calGoal);
-		//GridPane.setConstraints(calGoalTitle, 40, 2);
-		//grid.getChildren().add(calGoalTitle);
+		Text calGoalTitle = new Text(10, 50, "Calorie goal: "+calGoal);
+		GridPane.setConstraints(calGoalTitle, 40, 2);
+		grid.getChildren().add(calGoalTitle);
 
 		//~~ THIS WEEK'S MEALS SECTION ~~
 			String def = "in deficit!";
