@@ -336,7 +336,7 @@ public class RunMain extends Application {
 	}
 	
 	//This function inserts the user's meal info into the database
-	public static void insertMealInfo(String mealName, String servings, String date, String userID) throws Exception{
+	public static void insertMealInfo(String mealName, String date, String userID, int weekNum, int totalCalories) throws Exception{
 		try {
 			Connection con = getConnection();
 			
@@ -349,7 +349,7 @@ public class RunMain extends Application {
 			}
 			
 			//Insert meal into db
-			PreparedStatement insert = con.prepareStatement("Insert into usermeals(mealId, servings , date, userID) values ('"+mid+"','"+servings+"','"+date+"', '"+userID+"')");
+			PreparedStatement insert = con.prepareStatement("Insert into usermeals(mealId, date, userID, weekNumber, totalCalories) values ('"+mid+"','"+date+"', '"+userID+"', '"+weekNum+"','"+totalCalories+"')");
 			insert.executeUpdate();
 			
 		}catch(Exception e) {System.out.println(e);}
@@ -444,16 +444,41 @@ public class RunMain extends Application {
 		return null;
 	}
 	
+	public static int getTotalCalories(String mealName, int servings) throws Exception {
+		//this method is called before adding a new usermeal, it multiplies a meal's calories by the servings
+		Connection con = getConnection();
+		PreparedStatement statement = con.prepareStatement("Select caloriesPerServing From meals where foodItem = '"+mealName+"'");
+		ResultSet result = statement.executeQuery();
+		if(result.next()) {
+			return (result.getInt("caloriesPerServing") * servings);
+		}
+		return 0;
+	}
 	
-//	public static int getCaloriesForDay(ArrayList<Meal> meals) {
-//		int calorieTotal=0; 
-//		for(Meal x : meals) {
-//			//print on UI instead of console
-//			System.out.println(x.getName() + ": " + x.getCalories());
-//			calorieTotal += x.getCalories();
-//		}
-//		return calorieTotal;
-//	}
+	public static ArrayList<Usermeal> getDaysCalories(String userID){
+		//this method will get all meals from a given user
+		//and store them in Usermeal objects
+		
+		try {
+			Connection con = getConnection();
+			PreparedStatement statement = con.prepareStatement("Select * From usermeals where userID = '"+userID+"'" );
+			
+			ResultSet result = statement.executeQuery();
+			
+			ArrayList<Usermeal> meals = new ArrayList<Usermeal>();
+			while(result.next()) {
+				Usermeal x = new Usermeal(
+					result.getString("mealId"), 
+					result.getInt("totalCalories"),
+					result.getString("date"), 
+					result.getInt("weekNumber"));
+				meals.add(x);
+			}
+			return meals;
+		}catch(Exception e) {System.out.println(e);}
+		return null;
+	}
+	
 	
 	//APP HOME PAGE, MAIN CONTROLLER 
 	//IS CALLED AFTER LOGIN IS AUTHENTICATED
@@ -479,6 +504,12 @@ public class RunMain extends Application {
 			GridPane.setConstraints(weekviewTitle, 3, 3);
 			grid.getChildren().add(weekviewTitle);
 			
+			ChoiceBox<Integer> weekSelect = new ChoiceBox<Integer>();
+			weekSelect.setValue(1);
+			weekSelect.getItems().addAll(1, 2, 3, 4, 5, 6, 7);
+			GridPane.setConstraints(weekSelect, 30, 2);
+			grid.getChildren().add(weekSelect);
+			
 			//int mon = getCaloriesForDay(getMeals(username, "Monday")); //returns total calories for this day
 			//if(mon < Integer.parseInt(calGoal)) { //updates text with their calorie deficit status
 				//Text Monday = new Text(10, 50, "Monday: " + def);
@@ -486,7 +517,24 @@ public class RunMain extends Application {
 			//else {
 				//Text Monday = new Text(10, 50, "Monday: " + notDef);
 			//}
-			Text Monday = new Text(10, 50, "Monday: ");
+			
+			//gets all meals for this user
+			ArrayList<Usermeal> usermeals = getDaysCalories(userID);
+			
+			
+			//MAKE NEW METHOD WITH THIS SO IT CAN BE CALLED AFTER SUBMIT TO LIVE UPDATE
+			//OR make the page refresh every time a new week selection is made
+			int moncal=0;
+			if(weekSelect.getValue() == 1) {
+				for(Usermeal z : usermeals) {
+					if(z.getWeekday().equals("Monday") && z.getWeekNum() == 1) {
+						moncal += z.getCalories();
+					}
+				}
+				
+			}
+			
+			Text Monday = new Text(10, 50, "Monday: "+moncal+"/"+calGoal);
 			GridPane.setConstraints(Monday, 3, 6);
 			grid.getChildren().add(Monday);
 			
@@ -513,8 +561,6 @@ public class RunMain extends Application {
 			Text Sunday = new Text(10, 50, "Sunday: ");
 			GridPane.setConstraints(Sunday, 3, 18);
 			grid.getChildren().add(Sunday);
-			//method to query all meals for user
-			//store results in arraylist, add them to grid with weekday first
 		//~~ END OF THIS WEEK'S MEALS SECTION ~~
 		
 		
@@ -536,8 +582,8 @@ public class RunMain extends Application {
 			GridPane.setConstraints(mealType, 60, 7);
 			grid.getChildren().add(mealType);
 			
-			ChoiceBox<String> servings = new ChoiceBox<String>();
-			servings.getItems().addAll("1", "2", "3", "4", "5", "6", "7");
+			ChoiceBox<Integer> servings = new ChoiceBox<Integer>();
+			servings.getItems().addAll(1, 2, 3, 4, 5, 6, 7);
 			GridPane.setConstraints(servings, 60, 8);
 			grid.getChildren().add(servings);
 			
@@ -554,12 +600,11 @@ public class RunMain extends Application {
 			
 		submit.setOnAction(e -> {
 			try {
-				insertMealInfo(mealType.getValue(), servings.getValue(), date.getValue(), userID);
+				int calories = getTotalCalories(mealType.getValue(), servings.getValue());
+				insertMealInfo(mealType.getValue(), date.getValue(), userID, weekSelect.getValue(), calories);
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			//meal name, servings, date, userid
 		});
 		
 		//Build and display
