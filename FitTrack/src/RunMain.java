@@ -54,7 +54,7 @@ public class RunMain extends Application {
 		window.setTitle("Welcome to FITNESS TRACKER"); //message will be displayed on top left of window
 		GridPane grid = new GridPane();
 		Image img = new Image("FitnessTrackerLogo.jpg"); //importing graphic that appears upon opening
-		grid.getChildren().add(new ImageView(img));
+		//grid.getChildren().add(new ImageView(img));
 		
 		final TextField caButton1 = new TextField(); // the text field "Welcome to... will appear"
 		caButton1.setPromptText("Welcome to Fitness Tracker");
@@ -64,21 +64,24 @@ public class RunMain extends Application {
 		//create buttons with text
 		Button caButton = new Button("Create Account");
 		Button loginButton = new Button("Log In");
+		ImageView pic = new ImageView(img);
 		Button go = new Button ("Go");
 		
 		caButton.setOnAction(e -> createAccount(window)); 
 		loginButton.setOnAction(e -> login(window));
 
-		HBox layout = new HBox(); //displays boxes side by side
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
 		
-		layout.getChildren().add(caButton);
-		layout.getChildren().add(loginButton);
-		layout.getChildren().add(new ImageView(img));
+		GridPane.setConstraints(caButton, 40, 40);
+		GridPane.setConstraints(loginButton, 40, 42);
+		GridPane.setConstraints(pic, 50, 45);
+		grid.getChildren().add(caButton);
+		grid.getChildren().add(loginButton);
+		grid.getChildren().add(pic);
 		
-		Scene scene = new Scene(layout, 800, 500);
+		Scene scene = new Scene(grid, 800, 500);
 		window.setScene(scene);
 		window.show();
 	}
