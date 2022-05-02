@@ -70,7 +70,7 @@ public class RunMain extends Application {
 		button.setPadding(new Insets(430, 10, 10, 320));
 		
 		//import image and add it to hbox
-		Image img = new Image("FitnessTrackerLogo.jpg"); //importing graphic that appears upon opening
+		Image img = new Image("LogoFitnessTracker.png", 550,350, true, true); //importing graphic that appears upon opening
 		image.getChildren().add(new ImageView(img));
 
 		//create buttons with text
@@ -102,9 +102,14 @@ public class RunMain extends Application {
 		grid.setVgap(5);
 		grid.setHgap(5);
 		
+		Text calGoalTitle = new Text(10, 50, "Please enter information below: ");
+		GridPane.setConstraints(calGoalTitle, 40, 35);
+		grid.getChildren().add(calGoalTitle);
+		
 		//Display of Create Account Banner above boxes
-		Image img1 = new Image("CreateAccountScreen.jpg");
-		ImageView caa = new ImageView(img1);
+		//Image img1 = new Image("CreateAccountScreen.jpg");
+		//ImageView caa = new ImageView(img1);
+		
 		
 		
 		//Label to say if username is taken, or success message
@@ -154,11 +159,7 @@ public class RunMain extends Application {
 		Button back = new Button("Go Back");
 		GridPane.setConstraints(back, 41, 40);
 		grid.getChildren().add(back);
-		
-		//HBox layout = new HBox(); //displays boxes side by side
-		//Image img = new Image("FitnessTrackerLogo.jpg"); // logo in bottom right corner
-		//layout.getChildren().add(new ImageView(img));
-		
+				
 		//~~ END OF UI ELEMENTS ~~
 		
 		//Build the scene and display it on the stage
@@ -216,12 +217,24 @@ public class RunMain extends Application {
 	private static void login(Stage window) {
 		//~~ UI ELEMENTS ~~
 		
+		StackPane rootPane = new StackPane();
 		//Creating a GridPane container
 		//all ui elements will be added to the grid
 		GridPane grid = new GridPane();
+		
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
+		
+		
+		Text calGoalTitle = new Text(10, 50, "Please enter username and password: ");
+		GridPane.setConstraints(calGoalTitle, 40, 35);
+		grid.getChildren().add(calGoalTitle);
+		
+		
+		HBox image = new HBox();
+		image.setAlignment(Pos.CENTER);
+		
 		
 		//Label to say if username is incorrect
 		final Label label = new Label();
@@ -260,7 +273,8 @@ public class RunMain extends Application {
 		//~~ END OF UI ELEMENTS ~~
 		
 		//Build the scene and display it on the stage
-		ca = new Scene(grid, 800, 500);
+		rootPane.getChildren().addAll(image, grid);
+		ca = new Scene(rootPane, 800, 500);
 		window.setScene(ca);
 		
 		//~~ BUTTON EVENT HANDLING ~~
