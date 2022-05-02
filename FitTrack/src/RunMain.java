@@ -30,8 +30,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.control.ChoiceBox;
 import javafx.geometry.Insets;
@@ -63,14 +66,14 @@ public class RunMain extends Application {
 		
 		//image hbox - center position
 		HBox image = new HBox();
-		image.setAlignment(Pos.CENTER);
+		image.setAlignment(Pos.TOP_CENTER);
 		
 		//buttons hbox
 		HBox button = new HBox();
-		button.setPadding(new Insets(430, 10, 10, 320));
+		button.setPadding(new Insets(330, 10, 10, 290));
 		
 		//import image and add it to hbox
-		Image img = new Image("LogoFitnessTracker.png", 550,350, true, true); //importing graphic that appears upon opening
+		Image img = new Image("LogoFitnessTracker.png", 800, 600, true, true); //importing graphic that appears upon opening
 		image.getChildren().add(new ImageView(img));
 
 		//create buttons with text
@@ -105,12 +108,6 @@ public class RunMain extends Application {
 		Text calGoalTitle = new Text(10, 50, "Please enter information below: ");
 		GridPane.setConstraints(calGoalTitle, 40, 35);
 		grid.getChildren().add(calGoalTitle);
-		
-		//Display of Create Account Banner above boxes
-		//Image img1 = new Image("CreateAccountScreen.jpg");
-		//ImageView caa = new ImageView(img1);
-		
-		
 		
 		//Label to say if username is taken, or success message
 		final Label label = new Label();
@@ -192,7 +189,7 @@ public class RunMain extends Application {
 						//add to db
 						insertUserInfo(username.getText(), password.getText(), calorieGoal.getValue(), num);
 						//load home page
-						AppHome(window, num, calorieGoal.getValue(), 1);
+						AppHome(window, num, calorieGoal.getValue(), 1, username.getText());
 					}
 				} catch (Exception e2) {
 					e2.printStackTrace();
@@ -288,7 +285,7 @@ public class RunMain extends Application {
 					ArrayList<String> x = getUsersByName(username.getText());
 					if(x != null) {
 						if(password.getText().equals(x.get(2))) {
-							AppHome(window, x.get(0), x.get(1), 1);
+							AppHome(window, x.get(0), x.get(1), 1, username.getText());
 						
 						}
 						else {
@@ -495,8 +492,12 @@ public class RunMain extends Application {
 	
 	//APP HOME PAGE, MAIN CONTROLLER 
 	//IS CALLED AFTER LOGIN IS AUTHENTICATED
-	public static void AppHome(Stage window, String userID, String calGoal, int weeknum) throws Exception {
+	public static void AppHome(Stage window, String userID, String calGoal, int weeknum, String username) throws Exception {
 		window.setTitle("FitTrack Home");
+		
+		StackPane rootPane = new StackPane();
+		Font welcomeFont = Font.font("Verdana", FontWeight.BOLD, 18);
+		Font font = Font.font("Verdana", FontWeight.BOLD, 12);
 		
 		//Grid for all ui elements
 		GridPane grid = new GridPane();
@@ -504,41 +505,53 @@ public class RunMain extends Application {
 		grid.setVgap(5);
 		grid.setHgap(5);
 		
+		
+		HBox image = new HBox();
+		image.setPadding(new Insets(10, 10, 10, 10));
+		image.setSpacing(15);
+		Image img = new Image("FT.png", 100,40, true, true); 
+		image.getChildren().add(new ImageView(img));
+		Text usern = new Text("Welcome, " + username + "!");
+		usern.setFont(welcomeFont);
+		image.getChildren().add(usern);
+		
 		//gets all meals for this user
 		ArrayList<Usermeal> usermeals = getDaysCalories(userID);
 		
 		//~~ TOP MENU BAR ~~
 			//Displays user's calorie goal
 			Text calGoalTitle = new Text(10, 50, "Calorie goal: "+calGoal);
-			GridPane.setConstraints(calGoalTitle, 40, 2);
+			calGoalTitle.setFont(welcomeFont);
+			GridPane.setConstraints(calGoalTitle, 40, 10);
 			grid.getChildren().add(calGoalTitle);
 
 			//Text to describe week selection
 			Text weekSelectText = new Text(10, 50, "Select a week: ");
-			GridPane.setConstraints(weekSelectText, 3, 2);
+			weekSelectText.setFont(font);
+			GridPane.setConstraints(weekSelectText, 3, 10);
 			grid.getChildren().add(weekSelectText);
 			
 			ChoiceBox<Integer> weekSelect = new ChoiceBox<Integer>();
 			weekSelect.setValue(weeknum);
 			weekSelect.getItems().addAll(1, 2, 3, 4, 5, 6, 7);
-			GridPane.setConstraints(weekSelect, 4, 2);
+			GridPane.setConstraints(weekSelect, 4, 10);
 			grid.getChildren().add(weekSelect);
 			
 			//if week is changed, reload page with new week
 			weekSelect.setOnAction(e -> { try {
-				AppHome(window, userID, calGoal, weekSelect.getValue());
+				AppHome(window, userID, calGoal, weekSelect.getValue(), username);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			} });
 			
 			Button weekview = new Button("View meals");
-			GridPane.setConstraints(weekview, 6, 2);
+			GridPane.setConstraints(weekview, 6, 10);
 			weekview.setPrefWidth(120);
 			grid.getChildren().add(weekview);
 			
 			weekview.setOnAction(e -> {
 				try {
-					thisWeekMeals(window, userID, calGoal, weeknum, usermeals);
+					thisWeekMeals(window, username, userID, calGoal, weeknum, usermeals);
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
@@ -552,7 +565,7 @@ public class RunMain extends Application {
 			String notDef = "not in deficit.";
 			
 			Text weekviewTitle = new Text(10, 50, "This week's progress:");
-			GridPane.setConstraints(weekviewTitle, 3, 7);
+			GridPane.setConstraints(weekviewTitle, 3, 12);
 			grid.getChildren().add(weekviewTitle);
 			
 			int moncal=0, tuescal=0, wedcal=0, thurscal=0, frical=0, satcal=0, suncal=0;
@@ -581,38 +594,38 @@ public class RunMain extends Application {
 			}
 			
 			Text Monday = new Text(10, 50, "Monday:              "+moncal+"/"+calGoal);
-			GridPane.setConstraints(Monday, 3, 8);
+			GridPane.setConstraints(Monday, 3, 13);
 			grid.getChildren().add(Monday);
 			
 			Text Tuesday = new Text(10, 50, "Tuesday:              "+tuescal+"/"+calGoal);
-			GridPane.setConstraints(Tuesday, 3, 9);
+			GridPane.setConstraints(Tuesday, 3, 14);
 			grid.getChildren().add(Tuesday);
 			
 			Text Wednesday = new Text(10, 50, "Wednesday:        "+wedcal+"/"+calGoal);
-			GridPane.setConstraints(Wednesday, 3, 10);
+			GridPane.setConstraints(Wednesday, 3, 15);
 			grid.getChildren().add(Wednesday);
 			
 			Text Thursday = new Text(10, 50, "Thursday:            "+thurscal+"/"+calGoal);
-			GridPane.setConstraints(Thursday, 3, 11);
+			GridPane.setConstraints(Thursday, 3, 16);
 			grid.getChildren().add(Thursday);
 			
 			Text Friday = new Text(10, 50, "Friday:                 "+frical+"/"+calGoal);
-			GridPane.setConstraints(Friday, 3, 12);
+			GridPane.setConstraints(Friday, 3, 17);
 			grid.getChildren().add(Friday);
 			
 			Text Saturday = new Text(10, 50, "Saturday:            "+satcal+"/"+calGoal);
-			GridPane.setConstraints(Saturday, 3, 13);
+			GridPane.setConstraints(Saturday, 3, 18);
 			grid.getChildren().add(Saturday);
 			
 			Text Sunday = new Text(10, 50, "Sunday:              "+suncal+"/"+calGoal);
-			GridPane.setConstraints(Sunday, 3, 14);
+			GridPane.setConstraints(Sunday, 3, 19);
 			grid.getChildren().add(Sunday);
 		//~~ END OF THIS WEEK'S MEALS SECTION ~~
 		
 		
 		//~~ ADD MEAL SECTION ~~
-			Text newMealTitle = new Text(10, 50, "Add new meal:");
-			GridPane.setConstraints(newMealTitle, 40, 7);
+			Text newMealTitle = new Text(10, 50, "Add new meal: Select food, servings, and day");
+			GridPane.setConstraints(newMealTitle, 40, 12);
 			grid.getChildren().add(newMealTitle);
 			
 			//For displaying meal choices drop down menu
@@ -623,24 +636,30 @@ public class RunMain extends Application {
 			}
 			
 			//DROP DOWN BOXES
+			//Text mealSelect = new Text("Select a meal");
+			//GridPane.setConstraints(mealSelect, 40, 13);
 			ChoiceBox<String> mealType = new ChoiceBox<>(FXCollections.observableArrayList(mealNames));
 			mealType.getItems().addAll();
-			GridPane.setConstraints(mealType, 40, 8);
+			GridPane.setConstraints(mealType, 40, 13);
 			grid.getChildren().add(mealType);
+			//grid.getChildren().add(mealSelect);
 			
+			//Text servSelect = new Text("Select how many servings");
+			//GridPane.setConstraints(mealSelect, 40, 14);
 			ChoiceBox<Integer> servings = new ChoiceBox<Integer>();
 			servings.getItems().addAll(1, 2, 3, 4, 5, 6, 7);
-			GridPane.setConstraints(servings, 40, 9);
+			GridPane.setConstraints(servings, 40, 14);
 			grid.getChildren().add(servings);
+			//grid.getChildren().add(servSelect);
 			
 			ChoiceBox<String> date = new ChoiceBox<String>();
 			date.getItems().addAll("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
-			GridPane.setConstraints(date, 40, 10);
+			GridPane.setConstraints(date, 40, 15);
 			grid.getChildren().add(date);
 
 			
 			Button submit = new Button("Submit");
-			GridPane.setConstraints(submit, 40, 14);
+			GridPane.setConstraints(submit, 40, 16);
 			grid.getChildren().add(submit);
 			
 			submit.setOnAction(e -> {
@@ -649,7 +668,7 @@ public class RunMain extends Application {
 					insertMealInfo(mealType.getValue(), date.getValue(), userID, weekSelect.getValue(), calories);
 					
 					//refresh screen to show changes 
-					AppHome(window, userID, calGoal, weekSelect.getValue());
+					AppHome(window, userID, calGoal, weekSelect.getValue(), username);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -657,15 +676,19 @@ public class RunMain extends Application {
 		//~~ END OF ADD MEAL SECTION ~~
 
 		//Build and display
-		home = new Scene(grid, 800, 500);
+		rootPane.getChildren().addAll(image, grid);
+		home = new Scene(rootPane, 800, 500);
 		window.setScene(home);
 		window.show();
 	}
 	
-	public static void thisWeekMeals(Stage window, String userID, String calGoal, int weeknum, ArrayList<Usermeal> meals) throws Exception {
+	public static void thisWeekMeals(Stage window, String username, String userID, String calGoal, int weeknum, ArrayList<Usermeal> meals) throws Exception {
 		
 		//root pane to hold all vbox's and grid
 		StackPane rootPane = new StackPane();
+		
+		Font welcomeFont = Font.font("Verdana", FontWeight.BOLD, 18);
+		Font font = Font.font("Verdana", FontWeight.BOLD, 12);
 		
 		//Grid for back button and calorie goal
 		GridPane grid = new GridPane();
@@ -675,21 +698,22 @@ public class RunMain extends Application {
 		
 		//Displays user's calorie goal
 		Text calGoalTitle = new Text(10, 50, "Calorie goal: "+calGoal);
-		GridPane.setConstraints(calGoalTitle, 40, 2);
+		calGoalTitle.setFont(welcomeFont);
+		GridPane.setConstraints(calGoalTitle, 10, 2);
 		grid.getChildren().add(calGoalTitle);
 		
 		//displays the week days
 		HBox days = new HBox();
 		days.setPadding(new Insets(80, 10, 10, 30));
-		days.setSpacing(60);
+		days.setSpacing(48);
 		days.getChildren().addAll(
-				new Text("Monday"), 
-				new Text("Tuesday"), 
-				new Text("Wednesday"), 
-				new Text("Thursday"), 
-				new Text("Friday"), 
-				new Text("Saturday"), 
-				new Text("Sunday"));
+				new Text("MONDAY:"), 
+				new Text("TUESDAY:"), 
+				new Text("WEDNESDAY:"), 
+				new Text("THURSDAY:"), 
+				new Text("FRIDAY:"), 
+				new Text("SATURDAY:"), 
+				new Text("SUNDAY:"));
 		
 		//will contain all meals for each day
 		VBox mon = new VBox();
@@ -754,7 +778,7 @@ public class RunMain extends Application {
 		
 		back.setOnAction(e -> {
 			try {
-				AppHome(window, userID, calGoal, weeknum);
+				AppHome(window, userID, calGoal, weeknum, username);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
