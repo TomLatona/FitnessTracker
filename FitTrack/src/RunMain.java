@@ -28,6 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -140,13 +141,6 @@ public class RunMain extends Application {
 		pwCheck.setPromptText("Re-enter your password");
 		GridPane.setConstraints(pwCheck, 40, 42);
 		grid.getChildren().add(pwCheck);
-		
-		//calorie goal
-//		final TextField calorieGoal = new TextField();
-//		calorieGoal.setPrefColumnCount(15);
-//		calorieGoal.setPromptText("Enter your daily calorie goal");
-//		GridPane.setConstraints(calorieGoal, 40, 43);
-//		grid.getChildren().add(calorieGoal);
 		
 		ChoiceBox<String> calorieGoal = new ChoiceBox<String>();
 		calorieGoal.setValue("1500");
@@ -662,9 +656,11 @@ public class RunMain extends Application {
 	}
 	
 	public static void thisWeekMeals(Stage window, String userID, String calGoal, int weeknum, ArrayList<Usermeal> meals) throws Exception {
-		//Grid for all ui elements
+		
+		//root pane to hold all vbox's and grid
 		StackPane rootPane = new StackPane();
 		
+		//Grid for back button and calorie goal
 		GridPane grid = new GridPane();
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
@@ -675,15 +671,71 @@ public class RunMain extends Application {
 		GridPane.setConstraints(calGoalTitle, 40, 2);
 		grid.getChildren().add(calGoalTitle);
 		
-		VBox vbox = new VBox();
-		vbox.setPadding(new Insets(100, 10 , 10, 40));
-		vbox.setSpacing(10);
+		//displays the week days
+		HBox days = new HBox();
+		days.setPadding(new Insets(80, 10, 10, 30));
+		days.setSpacing(60);
+		days.getChildren().addAll(
+				new Text("Monday"), 
+				new Text("Tuesday"), 
+				new Text("Wednesday"), 
+				new Text("Thursday"), 
+				new Text("Friday"), 
+				new Text("Saturday"), 
+				new Text("Sunday"));
 		
+		//will contain all meals for each day
+		VBox mon = new VBox();
+		mon.setPadding(new Insets(110, 10 , 10, 30));
+		mon.setSpacing(15);
+		
+		VBox tues = new VBox();
+		tues.setPadding(new Insets(110, 10 , 10, 135));
+		tues.setSpacing(15);
+		
+		VBox wed = new VBox();
+		wed.setPadding(new Insets(110, 10 , 10, 240));
+		wed.setSpacing(15);
+		
+		VBox thurs = new VBox();
+		thurs.setPadding(new Insets(110, 10 , 10, 345));
+		thurs.setSpacing(15);
+		
+		VBox fri = new VBox();
+		fri.setPadding(new Insets(110, 10 , 10, 450));
+		fri.setSpacing(15);
+		
+		VBox sat = new VBox();
+		sat.setPadding(new Insets(110, 10 , 10, 555));
+		sat.setSpacing(15);
+		
+		VBox sun = new VBox();
+		sun.setPadding(new Insets(110, 10 , 10, 660));
+		sun.setSpacing(15);
+		
+		//for each usermeal object of the current week, add each day's meals to its vbox
 		for(Usermeal z : meals) {
 			if(z.getWeekNum() == weeknum) {
 				if(z.getWeekday().equals("Monday")) {
-					String m = z.getName() + ": " + z.getCalories();
-					vbox.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+					mon.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+				}
+				if(z.getWeekday().equals("Tuesday")) {
+					tues.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+				}
+				if(z.getWeekday().equals("Wednesday")) {
+					wed.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+				}
+				if(z.getWeekday().equals("Thursday")) {
+					thurs.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+				}
+				if(z.getWeekday().equals("Friday")) {
+					fri.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+				}
+				if(z.getWeekday().equals("Saturday")) {
+					sat.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
+				}
+				if(z.getWeekday().equals("Sunday")) {
+					sun.getChildren().add(new Text(z.getName() + ": " + z.getCalories()));
 				}
 			}
 		}
@@ -702,7 +754,7 @@ public class RunMain extends Application {
 		});
 		
 		//Build and display
-		rootPane.getChildren().addAll(grid, vbox);
+		rootPane.getChildren().addAll(mon, tues, wed, thurs, fri, sat, sun, days, grid);
 		home = new Scene(rootPane, 800, 500);
 		window.setScene(home);
 		window.show();
