@@ -59,42 +59,35 @@ public class RunMain extends Application {
 	public static void welcome(Stage window) {
 		window.setTitle("Welcome to FITNESS TRACKER"); //message will be displayed on top left of window
 		
-		GridPane grid = new GridPane();
+		StackPane rootPane = new StackPane();
+		
+		//image hbox - center position
+		HBox image = new HBox();
+		image.setAlignment(Pos.CENTER);
+		
+		//buttons hbox
+		HBox button = new HBox();
+		button.setPadding(new Insets(430, 10, 10, 320));
+		
+		//import image and add it to hbox
 		Image img = new Image("FitnessTrackerLogo.jpg"); //importing graphic that appears upon opening
-		//grid.getChildren().add(new ImageView(img));
-		
-		final TextField caButton1 = new TextField(); // the text field "Welcome to... will appear"
-		caButton1.setPromptText("Welcome to Fitness Tracker");
-		caButton1.getText();
-		GridPane.setConstraints(caButton1, 250, 150);
-		
-		ImageView pic = new ImageView(img);
+		image.getChildren().add(new ImageView(img));
+
 		//create buttons with text
 		Button caButton = new Button("Create Account");
 		Button loginButton = new Button("Log In");
-		Button go = new Button ("Go");
 		
+		//add buttons to hbox
+		button.getChildren().add(caButton);
+		button.getChildren().add(loginButton);
 		
-		
+		//event handling for buttons - method calls
 		caButton.setOnAction(e -> createAccount(window)); 
 		loginButton.setOnAction(e -> login(window));
 
-		grid.setPadding(new Insets(10, 10, 10, 10));
-		grid.setVgap(5);
-		grid.setHgap(5);
-		
-		GridPane.setConstraints(pic, 40, 43);
-		GridPane.setConstraints(caButton, 40, 41);
-		GridPane.setConstraints(loginButton, 40, 42);
-		
-		
-		grid.getChildren().add(pic);
-		grid.getChildren().add(caButton);
-		grid.getChildren().add(loginButton);
-		
-		//StackPane rootPane = new StackPane(); //Creates new placement on intro screen
-		Scene scene = new Scene(grid, 800, 500);
-		;
+		//build and display
+		rootPane.getChildren().addAll(image, button);
+		Scene scene = new Scene(rootPane, 800, 500);
 		window.setScene(scene);
 		window.show();
 	}
@@ -698,7 +691,7 @@ public class RunMain extends Application {
 		wed.setSpacing(15);
 		
 		VBox thurs = new VBox();
-		thurs.setPadding(new Insets(110, 10 , 10, 345));
+		thurs.setPadding(new Insets(110, 10 , 10, 350));
 		thurs.setSpacing(15);
 		
 		VBox fri = new VBox();
