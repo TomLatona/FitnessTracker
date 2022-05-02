@@ -1,7 +1,21 @@
-/*
- * This class will run first and prompt the user to either create an account or log in
- * If they choose create account, it will initialize a new user object and update the db
- * If they log in, it will authenticate the credentials and send them to the app
+/*  Authors : Thomas Latona, Jonathon Torres, Alex Hootsel
+ *  St. John's University
+ *  CUS 1166 : Software Engineering
+ *  Professor : Nikhil Yadav
+ *  Term Project
+ *  
+ *  App Name: Fitness-Tracker
+ *  
+ *  Description: This program is a nutrition/fitness tracker which allows the user to create an account
+ *   and set a personal goal for how many calories they want to consume per day. Each time they log in
+ *   they can see how many calories they have eaten each day for that week and see if they were over or
+ *   under their set goal, and even see the specific meals that they ate. They can select from all previous 
+ *   weeks that they have been using the app, and see their progress. We created a repository of foods,
+ *   which would obviously be expanded upon if we were building this for market, which contain many sample
+ *   food items to choose from, all with a saved calorie amount per serving. The user then selects the 
+ *   amount of portions they have eaten and it will do all the calculations. This app is a great way to 
+ *   track your health and fitness, with a nice and simple user friends UI.
+ * 
  */
 
 import java.sql.Connection;
