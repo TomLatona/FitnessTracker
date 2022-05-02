@@ -14,21 +14,25 @@ import java.util.Random;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
+import javafx.event.*;
+import javafx.event.*;
+//import javafx.event.EventHandler;
+//import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+//import javafx.scene.control.Button;
+//import javafx.scene.control.Label;
+//import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.scene.control.ChoiceBox;
+import javafx.geometry.Insets;
 import javafx.stage.Stage;
 
 public class RunMain extends Application {
@@ -52,6 +56,7 @@ public class RunMain extends Application {
 	
 	public static void welcome(Stage window) {
 		window.setTitle("Welcome to FITNESS TRACKER"); //message will be displayed on top left of window
+		
 		GridPane grid = new GridPane();
 		Image img = new Image("FitnessTrackerLogo.jpg"); //importing graphic that appears upon opening
 		//grid.getChildren().add(new ImageView(img));
@@ -59,13 +64,15 @@ public class RunMain extends Application {
 		final TextField caButton1 = new TextField(); // the text field "Welcome to... will appear"
 		caButton1.setPromptText("Welcome to Fitness Tracker");
 		caButton1.getText();
-		GridPane.setConstraints(caButton1, 320, 200);
+		GridPane.setConstraints(caButton1, 250, 150);
 		
+		ImageView pic = new ImageView(img);
 		//create buttons with text
 		Button caButton = new Button("Create Account");
 		Button loginButton = new Button("Log In");
-		ImageView pic = new ImageView(img);
 		Button go = new Button ("Go");
+		
+		
 		
 		caButton.setOnAction(e -> createAccount(window)); 
 		loginButton.setOnAction(e -> login(window));
@@ -74,14 +81,18 @@ public class RunMain extends Application {
 		grid.setVgap(5);
 		grid.setHgap(5);
 		
-		GridPane.setConstraints(caButton, 650, 300);
-		GridPane.setConstraints(loginButton, 650, 200);
-		GridPane.setConstraints(pic, 40, 0);
+		GridPane.setConstraints(pic, 40, 43);
+		GridPane.setConstraints(caButton, 40, 41);
+		GridPane.setConstraints(loginButton, 40, 42);
+		
+		
+		grid.getChildren().add(pic);
 		grid.getChildren().add(caButton);
 		grid.getChildren().add(loginButton);
-		grid.getChildren().add(pic);
 		
+		//StackPane rootPane = new StackPane(); //Creates new placement on intro screen
 		Scene scene = new Scene(grid, 800, 500);
+		;
 		window.setScene(scene);
 		window.show();
 	}
@@ -95,6 +106,11 @@ public class RunMain extends Application {
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
+		
+		//Display of Create Account Banner above boxes
+		Image img1 = new Image("CreateAccountScreen.jpg");
+		ImageView ca = new ImageView(img1);
+		
 		
 		//Label to say if username is taken, or success message
 		final Label label = new Label();
@@ -145,15 +161,15 @@ public class RunMain extends Application {
 		GridPane.setConstraints(back, 41, 40);
 		grid.getChildren().add(back);
 		
-		HBox layout = new HBox(); //displays boxes side by side
-		Image img = new Image("FitnessTrackerLogo.jpg"); // logo in bottom right corner
-		layout.getChildren().add(new ImageView(img));
+		//HBox layout = new HBox(); //displays boxes side by side
+		//Image img = new Image("FitnessTrackerLogo.jpg"); // logo in bottom right corner
+		//layout.getChildren().add(new ImageView(img));
 		
 		//~~ END OF UI ELEMENTS ~~
 		
 		//Build the scene and display it on the stage
-		ca = new Scene(grid, 800, 500);
-		window.setScene(ca);
+		//ca = new Scene(grid, 800, 500);
+		//window.setScene(ca);
 
 		//~~ BUTTON EVENT HANDLING ~~
 		//Submit button
