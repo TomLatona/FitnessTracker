@@ -109,7 +109,7 @@ public class RunMain extends Application {
 		
 		//Display of Create Account Banner above boxes
 		Image img1 = new Image("CreateAccountScreen.jpg");
-		ImageView ca = new ImageView(img1);
+		ImageView caa = new ImageView(img1);
 		
 		
 		//Label to say if username is taken, or success message
@@ -141,9 +141,15 @@ public class RunMain extends Application {
 		grid.getChildren().add(pwCheck);
 		
 		//calorie goal
-		final TextField calorieGoal = new TextField();
-		calorieGoal.setPrefColumnCount(15);
-		calorieGoal.setPromptText("Enter your daily calorie goal");
+//		final TextField calorieGoal = new TextField();
+//		calorieGoal.setPrefColumnCount(15);
+//		calorieGoal.setPromptText("Enter your daily calorie goal");
+//		GridPane.setConstraints(calorieGoal, 40, 43);
+//		grid.getChildren().add(calorieGoal);
+		
+		ChoiceBox<String> calorieGoal = new ChoiceBox<String>();
+		calorieGoal.setValue("1500");
+		calorieGoal.getItems().addAll("1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "2100", "2200", "2300", "2400", "2500", "2600", "2700", "2800", "2900", "3000", "3100", "3200", "3300", "3400", "3500");
 		GridPane.setConstraints(calorieGoal, 40, 43);
 		grid.getChildren().add(calorieGoal);
 		
@@ -168,8 +174,8 @@ public class RunMain extends Application {
 		//~~ END OF UI ELEMENTS ~~
 		
 		//Build the scene and display it on the stage
-		//ca = new Scene(grid, 800, 500);
-		//window.setScene(ca);
+		ca = new Scene(grid, 800, 500);
+		window.setScene(ca);
 
 		//~~ BUTTON EVENT HANDLING ~~
 		//Submit button
@@ -181,18 +187,6 @@ public class RunMain extends Application {
 		        pwCheck.clear();
 			}
 			else {
-				//check if calorie goal is a number and is not null
-//				if(calorieGoal.getText().chars().allMatch(Character :: isDigit) || calorieGoal == null) {
-//					label.setText("That calorie goal is invalid. Try again");
-//					calorieGoal.clear();
-//				}
-				
-				//check if calorie goal is within range
-//				if(Integer.parseInt(calorieGoal.getText()) > 1200 && Integer.parseInt(calorieGoal.getText()) < 10000){
-//					label.setText("That calorie goal is unsafe to be consuming, try something more realistic.");
-//					calorieGoal.clear();
-//				}
-				
 				try {
 					//check for duplicate usernames
 					if(checkForUser(username.getText()) == true) {
@@ -202,15 +196,18 @@ public class RunMain extends Application {
 					    pwCheck.clear();
 					}
 					else {
+						label.setText("Account created succesfully!");
+						//create userID
 						Random rand = new Random();
 						String num = String.format("%04d",  rand.nextInt(9999));
-						insertUserInfo(username.getText(), password.getText(), calorieGoal.getText(), num);
-						AppHome(window, num, calorieGoal.getText(), 1);
+						//add to db
+						insertUserInfo(username.getText(), password.getText(), calorieGoal.getValue(), num);
+						//load home page
+						AppHome(window, num, calorieGoal.getValue(), 1);
 					}
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}			
-				label.setText("Account created succesfully!"); 
 			}
 		 });
 		 
@@ -219,7 +216,7 @@ public class RunMain extends Application {
 	        username.clear();
 	        password.clear();
 	        pwCheck.clear();
-	        calorieGoal.clear();
+	        //calorieGoal.clear();
 	        label.setText(null);
 		});
 		
@@ -377,8 +374,6 @@ public class RunMain extends Application {
 		
 		try {
 			Connection con = getConnection();
-			
-			
 			//PreparedStatement id = con.prepareStatement("select userID from users where userID = '"+num+"'");
 			PreparedStatement insert = con.prepareStatement("Insert into users(userId,caloriegoal,password,username) values ('"+userId+"','"+calGoal+"','"+passW+"','"+userName+"')");
 			insert.executeUpdate();
