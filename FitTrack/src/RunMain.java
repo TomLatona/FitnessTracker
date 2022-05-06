@@ -703,6 +703,11 @@ public class RunMain extends Application {
 		GridPane.setConstraints(calGoalTitle, 10, 2);
 		grid.getChildren().add(calGoalTitle);
 		
+		//Display week number
+		Text weeknumTitle = new Text(10, 50, "Week number: "+weeknum);
+		GridPane.setConstraints(weeknumTitle, 15, 2);
+		grid.getChildren().add(weeknumTitle);
+		
 		//displays the week days side by side
 		HBox days = new HBox();
 		days.setPadding(new Insets(80, 10, 10, 30));
